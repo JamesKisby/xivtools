@@ -4,7 +4,7 @@ import { getData } from "../actions/index";
 
 
 export default function Post() {
-  const selector = useSelector(state => state.remoteArticles.slice(0,10));
+  const selector = useSelector(state => state.remoteArticles);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function Post() {
   return (
     <ul>
       {selector.map(el => (
-        <li key={el.id}>{el.title}</li>
+        <li key={el.id}>{el.bnpcname}</li>
       ))}
     </ul>
   );
