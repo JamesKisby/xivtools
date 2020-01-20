@@ -46,3 +46,7 @@ class NotoriousMonsterSchema(Schema):
     rank = fields.Int(required=True)
     bnpcname = fields.Str(required=True)
     unk3 = fields.Int(required=True)
+    test = fields.Method("format_rank", dump_only=True)
+
+    def format_rank(self,notoriousmonster):
+        return "{}, {}".format(notoriousmonster.bnpcname, notoriousmonster.bnpcbase)

@@ -1,10 +1,10 @@
 from flask import request,json,Response,Blueprint
-from ..models.NotoriousMonsterModel import NotoriousMonsterModel, NotoriousMonsterSchema
+from ..models.ItemModel import ItemModel, ItemSchema
 from ..shared.Authentication import Auth
 
 
 item_api = Blueprint('items',__name__)
-item_schema = NotoriousMonsterSchema()
+item_schema = ItemSchema()
 
 @item_api.route('/', methods=['POST'])
 def create():
@@ -14,7 +14,7 @@ def create():
     if error:
         return custom_response(error,400)
 
-    item = NotoriousMonsterModel(data)
+    item = ItemModel(data)
     item.save()
 
     ser_data = item_schema.dump(item)
@@ -26,17 +26,18 @@ def create():
 
 @item_api.route('/', methods=['GET'])
 def get_all():
-    items = NotoriousMonsterModel.get_limit(20)
-    print("GETALLITEM>>>",items)
+    items = ItemModel.get_limit(20)
+    print("ITEMS TYPE",type(items))
     ser_data = item_schema.dump(items, many=True)
+    print("SER_DATA TYPE",type(ser_data))
     return custom_response(ser_data, 200)
 
 
 @item_api.route('/<int:item_id>', methods=['GET'])
 def get_item(item_id):
-    item = NotoriousMonsterModel.get_one(item_id)
+    item = ItemModel.get_one(item_id)
     if not item:
-        return custom_response({'error': 'Item not foind'}, 404)
+        return custom_response({'error': 'Item not found'}, 404)
     print("ITEM>>>",item)
     ser_data = item_schema.dump(item)
     print("SER_DATA>>>",ser_data)
