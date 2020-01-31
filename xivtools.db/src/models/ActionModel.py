@@ -43,49 +43,8 @@ class ActionModel(db.Model):
     omen = db.Column(db.Text)
     ispvp = db.Column(db.Boolean)
     isplayeraction = db.Column(db.Boolean)
-    description = db.relationship('ActionTransientModel',uselist=False,backref="action")
+    #description = db.relationship('ActionTransientModel',uselist=False,backref="action")
 
-
-    def __init__(self,data):
-        self.id = data.get(id)
-        self.name = data.get(name)
-        self.icon = data.get(icon)
-        self.actioncategory = data.get(actioncategory)
-        self.classjob = data.get(classjob)
-        self.behaviourtype = data.get(behaviourtype)
-        self.classjoblevel = data.get(classjoblevel)
-        self.isroleaction = data.get(isroleaction)
-        self.range = data.get(range)
-        self.cantargetself = data.get(cantargetself)
-        self.cantargetparty = data.get(cantargetparty)
-        self.cantargetfriendly = data.get(cantargetfriendly)
-        self.cantargethostile = data.get(cantargethostile)
-        self.targetarea = data.get(targetarea)
-        self.cantargetdead = data.get(cantargetdead)
-        self.casttype = data.get(casttype)
-        self.effectrange = data.get(effectrange)
-        self.xaxismodifier = data.get(xaxismodifier)
-        self.primarycosttype = data.get(primarycosttype)
-        self.primarycostvalue = data.get(primarycostvalue)
-        self.secondarycosttype = data.get(secondarycosttype)
-        self.secondarycostvalue = data.get(secondarycostvalue)
-        self.actioncombo = data.get(actioncombo)
-        self.preservescombo = data.get(preservescombo)
-        self.cast100ms = data.get(cast100ms)
-        self.recast100ms = data.get(recast100ms)
-        self.cooldowngroup = data.get(cooldowngroup)
-        self.maxcharges = data.get(maxcharges)
-        self.attacktype = data.get(attacktype)
-        self.aspect = data.get(aspect)
-        self.actionprocstatus = data.get(actionprocstatus)
-        self.statusgainself = data.get(statusgainself)
-        self.unlocklink = data.get(unlocklink)
-        self.classjobcategory = data.get(classjobcategory)
-        self.affectsposition = data.get(affectsposition)
-        self.omen = data.get(omen)
-        self.ispvp = data.get(ispvp)
-        self.isplayeraction = data.get(isplayeraction)
-        self.description = data.get(description)
 
     def save(self):
         db.session.add(self)
@@ -102,7 +61,7 @@ class ActionModel(db.Model):
 
     @staticmethod
     def get_limit(n):
-        return ActionModel.query.join(ActionTransientModel).with_entities(
+        return db.session.query(
             ActionModel.id,
             ActionModel.name,
             ActionModel.icon,
@@ -116,24 +75,29 @@ class ActionModel(db.Model):
             ActionModel.attacktype,
             ActionModel.classjobcategory,
             ActionModel.statusgainself,
-            ActionTransientModel.description).limit(n)
+            ActionTransientModel.description
+        ).join(ActionTransientModel).limit(n)
 
     def get_one(id):
-        return ActionModel.query.join(ActionTransientModel).with_entities(
-            ActionModel.id,
-            ActionModel.name,
-            ActionModel.icon,
-            ActionModel.actioncategory,
-            ActionModel.classjob,
-            ActionModel.classjoblevel,
-            ActionModel.range,
-            ActionModel.cast100ms,
-            ActionModel.recast100ms,
-            ActionModel.maxcharges,
-            ActionModel.attacktype,
-            ActionModel.classjobcategory,
-            ActionModel.statusgainself,
-            ActionTransientModel.description).filter(ActionModel.id == id)
+        a = db.session.query(ActionModel.id,
+        ActionModel.name,
+        ActionModel.icon,
+        ActionModel.actioncategory,
+        ActionModel.classjob,
+        ActionModel.classjoblevel,
+        ActionModel.range,
+        ActionModel.cast100ms,
+        ActionModel.recast100ms,
+        ActionModel.maxcharges,
+        ActionModel.attacktype,
+        ActionModel.classjobcategory,
+        ActionModel.statusgainself,
+        ActionTransientModel.description
+        ).join(ActionTransientModel).filter(ActionModel.id == id)
+        print(a)
+        return a
+
+
 
     def __repr__(self):
         return '<id {}>'.format(self.id)

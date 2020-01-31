@@ -28,9 +28,23 @@ get = {
     "BaseParamSpecial3","BaseParamValueSpecial3","BaseParamSpecial4",
     "BaseParamValueSpecial4","BaseParamSpecial5","BaseParamValueSpecial5",
     "MaterializeType","MateriaSlotCount","IsAdvancedMeldingPermitted","IsPvP",
-    "unK88","IsGlamourous"]
+    "unK88","IsGlamourous"],
+    "Recipe":["id","Number","CraftType","RecipeLevelTable","ItemResult","AmountResult",
+    "ItemIngredient0","AmountIngredient0","ItemIngredient1","AmountIngredient1",
+    "ItemIngredient2","AmountIngredient2","ItemIngredient3","AmountIngredient3",
+    "ItemIngredient4","AmountIngredient4","ItemIngredient5","AmountIngredient5",
+    "ItemIngredient6","AmountIngredient6","ItemIngredient7","AmountIngredient7",
+    "ItemIngredient8","AmountIngredient8","ItemIngredient9","AmountIngredient9",
+    "unK25","IsSecondary","MaterialQualityFactor","DifficultyFactor","QualityFactor",
+    "DurabilityFactor","unK31","RequiredCraftsmanship","RequiredControl",
+    "QuickSynthCraftsmanship","QuickSynthControl","SecretRecipeBook",
+    "CanQuickSynth","CanHq","ExpRewarded","StatusRequired","ItemRequired",
+    "IsSpecializationRequired","unK43","PatchNumber"],
+    "RecipeLookup":["id","unK0","unK1","unK2","unK3","unK4","unK5","unK6","unK7"]
 }
 
-edit = {"Item":["EquipSlotCategory", "ItemAction", "ItemAction"]}
+edit = {"Item":["EquipSlotCategory", "ItemAction", "ItemAction"],
+        "Recipe":["RecipeLevelTable"]
+}
 
 lists = {"Item":["ModelMain", "ModelSub"]}

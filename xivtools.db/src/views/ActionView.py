@@ -35,9 +35,11 @@ def get_all():
 @action_api.route('/<int:action_id>', methods=['GET'])
 def get_item(action_id):
     action = ActionModel.get_one(action_id)
+    print("ACTION",action)
     if not action:
         return custom_response({'error': 'Action not found'}, 404)
     ser_data = action_schema.dump(action, many=True)
+    print("SER_DATA!",ser_data)
     return custom_response(ser_data, 200)
 
 

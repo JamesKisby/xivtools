@@ -1,5 +1,7 @@
 from marshmallow import fields, Schema
 from . import db
+from .RecipeLookupModel import RecipeLookupModel
+
 
 class ItemModel(db.Model):
     __tablename__ = 'item'
@@ -95,99 +97,9 @@ class ItemModel(db.Model):
     ispvp = db.Column(db.Boolean)
     unk88 = db.Column(db.SMALLINT)
     isglamourous = db.Column(db.Boolean)
+    iscraftable = db.Column(db.Boolean)
+    craftid = db.Column(db.ARRAY(db.Integer))
 
-    def __init__(self,data):
-        self.id = data.get(id)
-        self.singular = data.get(singular)
-        self.adjective = data.get(adjective)
-        self.plural = data.get(plural)
-        self.possessivepronoun = data.get(possessivepronoun)
-        self.startswithvowel = data.get(startswithvowel)
-        self.unk5 = data.get(unk5)
-        self.pronoun = data.get(pronoun)
-        self.article = data.get(article)
-        self.description = data.get(description)
-        self.name = data.get(name)
-        self.icon = data.get(icon)
-        self.levelitem = data.get(levelitem)
-        self.rarity = data.get(rarity)
-        self.filtergroup = data.get(filtergroup)
-        self.additionaldata = data.get(additionaldata)
-        self.itemuicategory = data.get(itemuicategory)
-        self.itemsearchcategory = data.get(itemsearchcategory)
-        self.equipslotcategory = data.get(equipslotcategory)
-        self.unk18 = data.get(unk18)
-        self.stacksize = data.get(stacksize)
-        self.isunique = data.get(isunique)
-        self.isuntradable = data.get(isuntradable)
-        self.isindisposable = data.get(isindisposable)
-        self.isequippable = data.get(isequippable)
-        self.pricemid = data.get(pricemid)
-        self.pricelow = data.get(pricelow)
-        self.canbehq = data.get(canbehq)
-        self.isdyeable = data.get(isdyeable)
-        self.iscrestworthy = data.get(iscrestworthy)
-        self.itemaction = data.get(itemaction)
-        self.unk30 = data.get(unk30)
-        self.cooldowns = data.get(cooldowns)
-        self.classjobrepair = data.get(classjobrepair)
-        self.itemrepair = data.get(itemrepair)
-        self.itemglamour = data.get(itemglamour)
-        self.salvage = data.get(salvage)
-        self.iscollectable = data.get(iscollectable)
-        self.alwayscollectable = data.get(alwayscollectable)
-        self.aetherialreduce = data.get(aetherialreduce)
-        self.levelequip = data.get(levelequip)
-        self.unk40 = data.get(unk40)
-        self.equiprestriction = data.get(equiprestriction)
-        self.classjobcategory = data.get(classjobcategory)
-        self.grandcompany = data.get(grandcompany)
-        self.itemseries = data.get(itemseries)
-        self.baseparammodifier = data.get(baseparammodifier)
-        self.modelmain = data.get(modelmain)
-        self.modelsub = data.get(modelsub)
-        self.classjobuse = data.get(classjobuse)
-        self.unk49 = data.get(unk49)
-        self.damagephys = data.get(damagephys)
-        self.damagemag = data.get(damagemag)
-        self.delayms = data.get(delayms)
-        self.unk53 = data.get(unk53)
-        self.blockrate = data.get(blockrate)
-        self.block = data.get(block)
-        self.defensephys = data.get(defensephys)
-        self.defensemag = data.get(defensemag)
-        self.baseparam0 = data.get(baseparam0)
-        self.baseparamvalue0 = data.get(baseparamvalue0)
-        self.baseparam1 = data.get(baseparam1)
-        self.baseparamvalue1 = data.get(baseparamvalue1)
-        self.baseparam2 = data.get(baseparam2)
-        self.baseparamvalue2 = data.get(baseparamvalue2)
-        self.baseparam3 = data.get(baseparam3)
-        self.baseparamvalue3 = data.get(baseparamvalue3)
-        self.baseparam4 = data.get(baseparam4)
-        self.baseparamvalue4 = data.get(baseparamvalue4)
-        self.baseparam5 = data.get(baseparam5)
-        self.baseparamvalue5 = data.get(baseparamvalue5)
-        self.itemspecialbonus = data.get(itemspecialbonus)
-        self.itemspecialbonusparam = data.get(itemspecialbonusparam)
-        self.baseparamspecial0 = data.get(baseparamspecial0)
-        self.baseparamvaluespecial0 = data.get(baseparamvaluespecial0)
-        self.baseparamspecial1 = data.get(baseparamspecial1)
-        self.baseparamvaluespecial1 = data.get(baseparamvaluespecial1)
-        self.baseparamspecial2 = data.get(baseparamspecial2)
-        self.baseparamvaluespecial2 = data.get(baseparamvaluespecial2)
-        self.baseparamspecial3 = data.get(baseparamspecial3)
-        self.baseparamvaluespecial3 = data.get(baseparamvaluespecial3)
-        self.baseparamspecial4 = data.get(baseparamspecial4)
-        self.baseparamvaluespecial4 = data.get(baseparamvaluespecial4)
-        self.baseparamspecial5 = data.get(baseparamspecial5)
-        self.baseparamvaluespecial5 = data.get(baseparamvaluespecial5)
-        self.materializetype = data.get(materializetype)
-        self.materiaslotcount = data.get(materiaslotcount)
-        self.isadvancedmeldingpermitted = data.get(isadvancedmeldingpermitted)
-        self.ispvp = data.get(ispvp)
-        self.unk88 = data.get(unk88)
-        self.isglamourous = data.get(isglamourous)
 
     def save(self):
         db.session.add(self)
@@ -207,10 +119,53 @@ class ItemModel(db.Model):
         return ItemModel.query.limit(n).all()
 
     def get_one(id):
-        return ItemModel.query.get(id)
+        return db.session.query(
+            ItemModel.id,
+            ItemModel.name,
+            ItemModel.iscraftable,
+            ItemModel.craftid,
+            ItemModel.pricemid
+        ).filter(ItemModel.id == id).first()
+
+
+    def updateCraft():
+        rows = db.session.query(ItemModel).count()
+        print("Rows",rows)
+        for i in range(rows):
+            x = db.session.query(ItemModel).get(i)
+            recipe = db.session.query(
+            RecipeLookupModel.unk0.label('crp'),
+            RecipeLookupModel.unk1.label('bsm'),
+            RecipeLookupModel.unk2.label('arm'),
+            RecipeLookupModel.unk3.label('gsm'),
+            RecipeLookupModel.unk4.label('ltw'),
+            RecipeLookupModel.unk5.label('wvr'),
+            RecipeLookupModel.unk6.label('alc'),
+            RecipeLookupModel.unk7.label('cul')).filter(RecipeLookupModel.id == i).first()
+            #print(recipe)
+            if recipe:
+                x.iscraftable = True
+                x.craftid = list(recipe)
+            else:
+                x.iscraftable = False
+            print(x.id, x.iscraftable)
+            db.session.commit()
+
+
+    def get_ingredient(name):
+        return db.session.query(
+            ItemModel.id,
+            ItemModel.name,
+            ItemModel.icon,
+            ItemModel.iscraftable,
+            ItemModel.craftid,
+            ItemModel.levelitem,
+            ItemModel.pricemid
+        ).filter(ItemModel.name == name).first()
+
 
     def __repr(self):
-        return '<id {}>'.format(self.id)
+        return '<id {}, isCraftable {}>'.format(self.id,self.isCraftable)
 
 
 class ItemSchema(Schema):
@@ -305,3 +260,5 @@ class ItemSchema(Schema):
     ispvp = fields.Boolean(required=True)
     unk88 = fields.Int(required=True)
     isglamourous = fields.Boolean(required=True)
+    iscraftable = fields.Boolean(required=True)
+    craftid = fields.List(fields.Int(), required=True)
