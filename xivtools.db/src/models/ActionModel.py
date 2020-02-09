@@ -79,23 +79,22 @@ class ActionModel(db.Model):
         ).join(ActionTransientModel).limit(n)
 
     def get_one(id):
-        a = db.session.query(ActionModel.id,
-        ActionModel.name,
-        ActionModel.icon,
-        ActionModel.actioncategory,
-        ActionModel.classjob,
-        ActionModel.classjoblevel,
-        ActionModel.range,
-        ActionModel.cast100ms,
-        ActionModel.recast100ms,
-        ActionModel.maxcharges,
-        ActionModel.attacktype,
-        ActionModel.classjobcategory,
-        ActionModel.statusgainself,
-        ActionTransientModel.description
+        return db.session.query(
+            ActionModel.id,
+            ActionModel.name,
+            ActionModel.icon,
+            ActionModel.actioncategory,
+            ActionModel.classjob,
+            ActionModel.classjoblevel,
+            ActionModel.range,
+            ActionModel.cast100ms,
+            ActionModel.recast100ms,
+            ActionModel.maxcharges,
+            ActionModel.attacktype,
+            ActionModel.classjobcategory,
+            ActionModel.statusgainself,
+            ActionTransientModel.description
         ).join(ActionTransientModel).filter(ActionModel.id == id)
-        print(a)
-        return a
 
 
 

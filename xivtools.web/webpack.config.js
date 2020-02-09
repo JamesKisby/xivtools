@@ -1,6 +1,10 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = {
+  output: {
+    publicPath: '/',
+    filename: 'bundle.js'
+  },
   module: {
     rules: [{
         test: /\.(js|jsx)$/,
@@ -8,6 +12,13 @@ module.exports = {
         use: {
           loader: "babel-loader"
         }
+      },
+      {
+        test: /\.css$/,
+        use: [
+          "style-loader",
+          "css-loader"
+        ]
       },
       {
         test: /\.html$/,
@@ -25,5 +36,8 @@ module.exports = {
   ],
   resolve: {
     extensions: [".js", ".jsx"]
+  },
+  devServer: {
+    historyApiFallback: true
   }
 };

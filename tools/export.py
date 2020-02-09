@@ -13,6 +13,7 @@ from psycopg2.extras import execute_values
 
 def arrReturn(col, item, name):
     #formating data
+    item = item.replace('{','').replace('}','')
     if name in config.edit:
         for e in config.edit[name]:
             if re.search(e,item):
@@ -42,17 +43,9 @@ def exportData(filename):
 
     table = filename.lower()
     cols = config.get[filename]
+    cols = data[1]
     data = ast.literal_eval(data[2])
     res = []
-
-    '''
-    if filename.endswith("Transient"):
-        return data
-
-    if filename+"Transient" in config.get:
-        cols.append(*config.get[filename+"Transient"])
-        data = {**data, **exportData(filename+"Transient")}
-    '''
 
     for i in range(0,len(data[cols[0]])):
         r = [arrReturn(a,data[a][i],filename) for a in cols]

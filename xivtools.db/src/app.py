@@ -5,6 +5,7 @@ from .models import db, bcrypt
 from .views.ItemView import updateCraft, item_api as item_blueprint
 from .views.ActionView import action_api as action_blueprint
 from .views.NotoriousMonsterView import monster_api as monster_blueprint
+from .views.RaidDropsView import raid_api as raid_blueprint
 
 
 def create_app(env_name):
@@ -19,6 +20,7 @@ def create_app(env_name):
     app.register_blueprint(monster_blueprint, url_prefix='/api/v1/monsters')
     app.register_blueprint(action_blueprint, url_prefix='/api/v1/actions')
     app.register_blueprint(item_blueprint, url_prefix='/api/v1/items')
+    app.register_blueprint(raid_blueprint, url_prefix='/api/v1/raid')
 
     @app.route('/',methods=['GET'])
     def index():

@@ -124,7 +124,12 @@ class ItemModel(db.Model):
             ItemModel.name,
             ItemModel.iscraftable,
             ItemModel.craftid,
-            ItemModel.pricemid
+            ItemModel.pricemid,
+            ItemModel.itemuicategory,
+            ItemModel.itemsearchcategory,
+            ItemModel.equipslotcategory,
+            ItemModel.equiprestriction,
+            ItemModel.classjobcategory
         ).filter(ItemModel.id == id).first()
 
 

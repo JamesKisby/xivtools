@@ -1,9 +1,10 @@
-import { ADD_ARTICLE,DATA_LOADED,API_ERRORED } from "../constants/action-type";
+import { ADD_ARTICLE,DATA_LOADED,API_ERRORED,RAID_DATA_LOADED } from "../constants/action-type";
 
 
 const initialState = {
   articles: [],
-  remoteArticles: []
+  remoteArticles: [],
+  raidData: []
 };
 
 function rootReducer(state = initialState, action) {
@@ -15,6 +16,11 @@ function rootReducer(state = initialState, action) {
   if(action.type == DATA_LOADED) {
     return Object.assign({}, state, {
       remoteArticles: state.remoteArticles.concat(action.payload)
+    });
+  }
+  if(action.type == RAID_DATA_LOADED) {
+    return Object.assign({}, state, {
+      raidData: state.raidData.concat(action.payload)
     });
   }
   if(action.type == API_ERRORED) {

@@ -1,4 +1,4 @@
-from flask import request,json,Response,Blueprint
+from flask import request,json,Response,Blueprint,jsonify,request
 from ..models.NotoriousMonsterModel import NotoriousMonsterModel, NotoriousMonsterSchema
 from ..shared.Authentication import Auth
 

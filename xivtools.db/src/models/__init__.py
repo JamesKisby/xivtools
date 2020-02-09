@@ -12,3 +12,4 @@ from .ActionTransientModel import ActionTransientModel
 from .ItemModel import ItemModel, ItemSchema
 from .RecipeModel import RecipeModel, RecipeSchema
 from .RecipeLookupModel import RecipeLookupModel
+from .RaidDropsModel import RaidDropsModel, RaidDropsSchema
