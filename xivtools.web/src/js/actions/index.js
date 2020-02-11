@@ -5,11 +5,9 @@ export function addArticle(payload) {
 };
 
 export function getData() {
-  console.log("IN GETDATA");
   return {type: DATA_REQUESTED}
 };
 
 export function getRaidData(userid) {
-  console.log("IN GETRAIDDATA");
   return {type: RAID_DATA_REQUESTED, userid}
 }

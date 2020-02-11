@@ -24,7 +24,7 @@ def create_app(env_name):
 
     @app.route('/',methods=['GET'])
     def index():
-        updateCraft()
+        #updateCraft()
         return 'Endpoint is working'
 
     return app

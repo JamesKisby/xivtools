@@ -11,8 +11,6 @@ function* workerSaga() {
   try {
     const payload = yield call(getData);
     if(payload) {
-      console.log("HERE");
-      console.log(payload[5].id);
       yield put({type: actions.DATA_LOADED, payload});
     } else {
       throw payload;
@@ -36,7 +34,6 @@ function getRaidData(userid) {
 
 
 function* LoadRaid(params) {
-  console.log(params);
   try {
     const payload = yield call(getRaidData, params.userid);
     if(payload) {
@@ -51,7 +48,6 @@ function* LoadRaid(params) {
 
 
 export default function* root() {
-  console.log("RIIT");
   yield all([
     takeEvery(actions.RAID_DATA_REQUESTED, LoadRaid),
     takeEvery(actions.DATA_REQUESTED, workerSaga)

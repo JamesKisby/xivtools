@@ -7,8 +7,6 @@ import "../../css/App.css";
 export default function RaidTracker({ match }) {
   const selector = useSelector(state => state.raidData);
   const dispatch = useDispatch();
-  console.log("SELECTOR")
-  console.log(selector);
   useEffect(() => {
     dispatch(getRaidData(match.params.userid));
   }, []);
@@ -19,16 +17,16 @@ export default function RaidTracker({ match }) {
         <h2>RAID TRACKER</h2>
       </div>
 
-          {selector.map(el => (
-            <table className="table table-striped table-dark">
+          {selector.map((el,indd) => (
+            <table key={indd} className="table table-striped table-dark">
               <thead>
                 <tr>
-                  <th colspan="5" scope="col">{el[0].playername}</th>
+                  <th colSpan="5" scope="col">{el[0].playername}</th>
                 </tr>
               </thead>
               <tbody>
-                {el.map(i => (
-                  <tr>
+                {el.map((i, ind) => (
+                  <tr key={ind}>
                     <td className="col-sm-2"><img className="icon title-icon-border" src={i.icons} /></td>
                     <td className="col-sm-4">{i.itemnames}</td>
                     <td className="col-sm-3">Week 1</td>

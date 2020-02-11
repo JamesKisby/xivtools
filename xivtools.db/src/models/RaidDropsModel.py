@@ -39,16 +39,7 @@ class RaidDropsModel(db.Model):
 
     def update(self, data):
         print("IN UPDATE")
-        print(data[0]['XIVEvent']['Actor']['Name'])
-        self.name = data[0]['XIVEvent']['Actor']['Name']
-        self.world = data[0]['XIVEvent']['Actor']['HomeWorld']['Name']
-        self.isreporter = data[0]['XIVEvent']['Actor']['IsReporter']
-        self.classjob = data[0]['XIVEvent']['Actor']['ClassJob']['Abbreviation']
-        self.time = data[0]['ACTLogLineEvent']['DetectedTime']
-        self.logmessage = data[0]['LogMessage']
-        self.itemid = data[0]['XIVEvent']['Item']['Id']
-        self.itemquantity = data[0]['XIVEvent']['Item']['Quantity']
-        self.playerid = data[1]
+        self.itemquantity = self.itemquantity + data['itemquantity']
         db.session.commit()
 
     def delete(self):
@@ -58,6 +49,13 @@ class RaidDropsModel(db.Model):
     @staticmethod
     def get_limit(n):
         return RaidDropsModel.query.limit(n).all()
+
+    def get_one(data):
+        return db.session.query(RaidDropsModel).filter(
+            RaidDropsModel.playerid == data['playerid'],
+            RaidDropsModel.itemid == data['itemid'],
+            RaidDropsModel.name == data['name']
+        ).first()
 
     def get_by_player(playerid):
         q = db.session.query(

@@ -45,8 +45,9 @@ def get_raid(playerid):
     for i,data in enumerate(ser_data):
         b = [dict(zip(keys, vals)) for vals in zip(*(data[k] for k in keys))]
         for c in b:
+            icons = c['icons'].split("/")
             c['playername'] = names[i]
-            c['icons'] = 'http://garlandtools.org/files/icons/item/' + c['icons'].split("/")[-1].replace("tex","png").lstrip("0")
+            c['icons'] = '/assets/icons/' + icons[-2] + "/" + icons[-1].replace("tex","png")
         a.append(b)
     print(a)
     print(json.dumps(a))
@@ -76,8 +77,13 @@ def set_test():
     data['itemid'] = req_data[0]['XIVEvent']['Item']['Id']
     data['itemquantity'] = req_data[0]['XIVEvent']['Item']['Quantity']
     data['playerid'] = req_data[1]
+
     raiddrop = RaidDropsModel(data)
-    raiddrop.save()
+    raid = RaidDropsModel.get_one(data)
+    if raid:
+        raid.update(data)
+    else:
+        raiddrop.save()
     return ('', 204)
 
 def custom_response(res, status_code):
