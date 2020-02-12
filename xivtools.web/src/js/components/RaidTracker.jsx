@@ -2,42 +2,25 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getRaidData } from "../actions/index";
 import "../../css/App.css";
+import RaidTrackerInd from "./RaidTrackerInd";
 
 
-export default function RaidTracker({ match }) {
+const RaidTracker = (props) => {
   const selector = useSelector(state => state.raidData);
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(getRaidData(match.params.userid));
-  }, []);
+    dispatch(getRaidData(props.match.params.userid));
+  }, [props.match.params.userid]);
 
   return (
-    <div id="menu" className="row">
-      <div className="col-12">
-        <h2>RAID TRACKER</h2>
-      </div>
-
+    <div>
           {selector.map((el,indd) => (
-            <table key={indd} className="table table-striped table-dark">
-              <thead>
-                <tr>
-                  <th colSpan="5" scope="col">{el[0].playername}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {el.map((i, ind) => (
-                  <tr key={ind}>
-                    <td className="col-sm-2"><img className="icon title-icon-border" src={i.icons} /></td>
-                    <td className="col-sm-4">{i.itemnames}</td>
-                    <td className="col-sm-3">Week 1</td>
-                    <td className="col-sm-2">Amount:</td>
-                    <td className="col-sm-1">{i.itemquantities}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <RaidTrackerInd key={indd} name={el[0].playername} el={el}/>
           ))}
 
     </div>
   );
 }
+
+export default RaidTracker;

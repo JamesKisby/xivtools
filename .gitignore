@@ -1,3 +1,4 @@
 xivtools.web/node_modules
 xivtools.web/assets
 xivtools.db/.env
+xivtools.web/.env

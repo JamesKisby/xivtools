@@ -20,7 +20,7 @@ function rootReducer(state = initialState, action) {
   }
   if(action.type == RAID_DATA_LOADED) {
     return Object.assign({}, state, {
-      raidData: state.raidData.concat(action.payload)
+      raidData: action.payload
     });
   }
   if(action.type == API_ERRORED) {

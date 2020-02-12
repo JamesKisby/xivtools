@@ -40,7 +40,8 @@ get = {
     "QuickSynthCraftsmanship","QuickSynthControl","SecretRecipeBook",
     "CanQuickSynth","CanHq","ExpRewarded","StatusRequired","ItemRequired",
     "IsSpecializationRequired","unK43","PatchNumber"],
-    "RecipeLookup":["id","unK0","unK1","unK2","unK3","unK4","unK5","unK6","unK7"]
+    "RecipeLookup":["id","unK0","unK1","unK2","unK3","unK4","unK5","unK6","unK7"],
+    "Status":[]
 }
 
 edit = {"Item":["EquipSlotCategory", "ItemAction", "ItemAction"],
