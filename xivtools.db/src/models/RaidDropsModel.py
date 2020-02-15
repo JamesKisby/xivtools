@@ -6,6 +6,60 @@ from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.dialects.postgresql import aggregate_order_by
 
 
+class RaidTrackerModel(db.Model):
+    __tablename__ = 'raidtracker'
+
+    id = db.Column(db.Integer, primary_key=True)
+    userid = db.Column(db.Text)
+    raidname = db.Column(db.Text)
+    trackerid = db.Column(db.Text)
+    owner = db.Column(db.ARRAY(db.Text))
+    isactive = db.Column(db.Boolean)
+
+    def __init__(self, data):
+        self.userid = data['userid']
+        self.raidname = data['raidname']
+        self.trackerid = data['raidid'][0]
+        self.owner = data['owner']
+        self.isactive = data['isactive']
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self, data):
+        print("IN UPDATE")
+        self.itemquantity = self.itemquantity + data['itemquantity']
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    @staticmethod
+    def get_limit(n):
+        return RaidTrackerModel.query.limit(n).all()
+
+    def get_tracker(trackerid):
+        return db.session.query(RaidTrackerModel).filter(
+            RaidTrackerModel.trackerid == trackerid
+        ).first()
+
+    def __repr__(self):
+        return '<id {}>'.format(self.id)
+
+
+
+class RaidTrackerSchema(Schema):
+    id = fields.Int(dump_only=True)
+    userid = fields.Str(required=True)
+    raidname = fields.Str(required=True)
+    trackerid = fields.Str(required=True)
+    owner = fields.List(fields.Str(), required=True)
+    isactive = fields.Boolean(required=True)
+
+
+
 class RaidDropsModel(db.Model):
     __tablename__ = 'raiddrops'
 

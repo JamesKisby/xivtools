@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getUsersRaids } from "../actions/index";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -12,11 +14,16 @@ import SupervisedUserCircleRoundedIcon from '@material-ui/icons/SupervisedUserCi
 
 export default function Sidebar({ match }) {
   const [open, setOpen] = useState(false);
-
+  const selector = useSelector(state => state.raid.userRaids);
+  const formSelector = useSelector(state => state.form.raidChange);
+  const user = localStorage.getItem('user')
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getUsersRaids(user));
+  }, [user, formSelector]);
   const handleClick = () => {
     setOpen(!open);
   };
-
   return (
     <div>
     <h1>XIV TOOLS</h1>
@@ -34,26 +41,21 @@ export default function Sidebar({ match }) {
             <ListItemText>
               <AddBoxOutlined />
               <span className="sidebar-subitem-text">
-                Add new Raid Team
+                  Add new Raid Team
               </span>
             </ListItemText>
           </ListItem>
-          <ListItem style={{ paddingLeft: 36 }} button component={Link} to={`/raid_tracker/team/123456789`}>
-            <ListItemText>
-              <SupervisedUserCircleRoundedIcon />
-              <span className="sidebar-subitem-text">
-                First Raiding
-              </span>
-            </ListItemText>
-          </ListItem>
-          <ListItem style={{ paddingLeft: 36 }} button component={Link} to={`/raid_tracker/team/987654321`}>
-            <ListItemText>
-              <SupervisedUserCircleRoundedIcon />
-              <span className="sidebar-subitem-text">
-                First Raiding
-              </span>
-            </ListItemText>
-          </ListItem>
+          {"raidid" in selector && selector.raidid != null ? (
+              selector.raidid.map((el, ind) => (
+                <ListItem key={el} style={{ paddingLeft: 36 }} button component={Link} to={`/raid_tracker/team/${el}`}>
+                  <ListItemText>
+                    <SupervisedUserCircleRoundedIcon />
+                    <span className="sidebar-subitem-text">
+                      {selector.raidname[ind]}
+                    </span>
+                  </ListItemText>
+                </ListItem>
+              ))) : null}
         </List>
       </Collapse>
     </List>

@@ -1,4 +1,5 @@
-body {
+html, body {
+  height: 100%;
   color: white;
   background-color: black;
 }
@@ -62,4 +63,14 @@ body {
 
 .sidebar-subitem-text {
   font-size: 0.8rem;
+}
+
+.nav {
+  background-color: #232729;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background-color: #232729;
 }

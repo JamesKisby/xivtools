@@ -7,12 +7,11 @@ import "../../css/App.css";
 
 
 const App = () => (
-  <div id="menu" className="row">
-    <div className="col-12">
-    <br />
-      <h2>Home</h2>
+  <div>
+    <div id="menu" className="row">
+      <h1>Home</h1>
     </div>
-    <div className="col-12">
+    <div className="row">
       <br />
       <h3>Welcome to XIVTOOLS</h3>
     </div>

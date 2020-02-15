@@ -30,8 +30,26 @@ function getRaidData(userid) {
     .then(response => response.json());
 }
 
+function getUsersRaids(raid) {
+  return fetch("http://127.0.0.1:5000/api/v1/whoami/" + String(raid))
+    .then(response => response.json());
+}
 
+function addRaidTeam(raid) {
+  return fetch("http://127.0.0.1:5000/api/v1/raid/add/" + String(raid.user) + "&name=" + String(raid.raidname))
+    .then(response => response.json());
+}
 
+function addExistingRaidTeam(raid) {
+  console.log("existig", raid);
+  return fetch("http://127.0.0.1:5000/api/v1/raid/addexisting/" + String(raid.user) + "&raidid=" + String(raid.raidid))
+    .then(response => response.json());
+}
+
+function removeRaidTeam(raid) {
+  return fetch("http://127.0.0.1:5000/api/v1/raid/remove/" + String(raid.user) + "&raidid=" + String(raid.raidid) + "&name=" + String(raid.raidname))
+    .then(response => response.json());
+}
 
 function* LoadRaid(params) {
   try {
@@ -46,10 +64,76 @@ function* LoadRaid(params) {
   }
 }
 
+function* UserRaidSaga(params) {
+  try {
+    const payload = yield call(getUsersRaids, params.raid);
+    if(payload) {
+      yield put({type: actions.USER_RAID_DATA_LOADED, payload});
+    } else {
+      throw payload;
+    }
+  } catch(e) {
+    yield put({type: actions.USER_RAID_DATA_FAILED, payload: e})
+  }
+}
+
+function* AddTeamSaga(params) {
+  try {
+    const payload = yield call(addRaidTeam, params.team.newRaidValues);
+    if(payload) {
+      yield put({type: actions.USER_RAID_ADDED, payload});
+    } else {
+      throw payload;
+    }
+  } catch(e) {
+    yield put({type: actions.USER_RAID_ADD_FAILED, payload: e})
+  }
+}
+
+function* AddExistingTeamSaga(params) {
+  console.log("EXISTINGTERAM", params);
+  try {
+    const payload = yield call(addExistingRaidTeam, params.team.raidValues);
+    if(payload) {
+      yield put({type: actions.USER_RAID_ADDED, payload});
+    } else {
+      throw payload;
+    }
+  } catch(e) {
+    yield put({type: actions.USER_RAID_ADD_FAILED, payload: e})
+  }
+}
+
+function* RemoveTeamSaga(params) {
+  try {
+    const payload = yield call(removeRaidTeam, params.team);
+    if(payload) {
+      yield put({type: actions.USER_RAID_REMOVED, payload});
+    } else {
+      throw payload;
+    }
+  } catch(e) {
+    yield put({type: actions.USER_RAID_REMOVE_FAILED, payload: e})
+  }
+}
+
+function* loginSuccess() {
+  yield put({type: actions.LOGIN_AUTH, payload: true})
+}
+
+function* logoutSuccess() {
+  yield put({type: actions.LOGOUT_AUTH, payload: true})
+}
 
 export default function* root() {
   yield all([
     takeEvery(actions.RAID_DATA_REQUESTED, LoadRaid),
-    takeEvery(actions.DATA_REQUESTED, workerSaga)
+    takeEvery(actions.DATA_REQUESTED, workerSaga),
+    takeEvery(actions.USER_RAID_REQUESTED, UserRaidSaga),
+    takeEvery(actions.ADD_RAID_TEAM, AddTeamSaga),
+    takeEvery(actions.ADD_EXISTING_RAID_TEAM, AddExistingTeamSaga),
+    takeEvery(actions.REMOVE_RAID_TEAM, RemoveTeamSaga),
+    takeEvery(actions.LOGIN_SUCCESS, loginSuccess),
+    takeEvery(actions.LOGOUT_SUCCESS, logoutSuccess)
   ])
 }

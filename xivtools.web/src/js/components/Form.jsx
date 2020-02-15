@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addArticle } from "../actions/index";
 
 
 export default function Form(props) {
@@ -9,7 +8,6 @@ export default function Form(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(addArticle(values));
     setValues({title: ""});
   }
 
