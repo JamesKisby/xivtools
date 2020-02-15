@@ -1,6 +1,7 @@
 import "regenerator-runtime/runtime";
 import { takeEvery, call, put, fork, all } from "redux-saga/effects";
 import * as actions from "../constants/action-type";
+import { api } from "../utils/auth";
 
 
 //export default function* watcherSaga() {
@@ -21,33 +22,32 @@ function* workerSaga() {
 }
 
 function getData() {
-  return fetch("http://127.0.0.1:5000/api/v1/monsters")
+  return fetch(api + "/monsters")
     .then(response => response.json());
 }
 
 function getRaidData(userid) {
-  return fetch("http://127.0.0.1:5000/api/v1/raid/" + String(userid))
+  return fetch(api + "/raid/" + String(userid))
     .then(response => response.json());
 }
 
 function getUsersRaids(raid) {
-  return fetch("http://127.0.0.1:5000/api/v1/whoami/" + String(raid))
+  return fetch(api + "/whoami/" + String(raid))
     .then(response => response.json());
 }
 
 function addRaidTeam(raid) {
-  return fetch("http://127.0.0.1:5000/api/v1/raid/add/" + String(raid.user) + "&name=" + String(raid.raidname))
+  return fetch(api + "/raid/add/" + String(raid.user) + "&name=" + String(raid.raidname))
     .then(response => response.json());
 }
 
 function addExistingRaidTeam(raid) {
-  console.log("existig", raid);
-  return fetch("http://127.0.0.1:5000/api/v1/raid/addexisting/" + String(raid.user) + "&raidid=" + String(raid.raidid))
+  return fetch(api + "/raid/addexisting/" + String(raid.user) + "&raidid=" + String(raid.raidid))
     .then(response => response.json());
 }
 
 function removeRaidTeam(raid) {
-  return fetch("http://127.0.0.1:5000/api/v1/raid/remove/" + String(raid.user) + "&raidid=" + String(raid.raidid) + "&name=" + String(raid.raidname))
+  return fetch(api + "/raid/remove/" + String(raid.user) + "&raidid=" + String(raid.raidid) + "&name=" + String(raid.raidname))
     .then(response => response.json());
 }
 
@@ -91,7 +91,6 @@ function* AddTeamSaga(params) {
 }
 
 function* AddExistingTeamSaga(params) {
-  console.log("EXISTINGTERAM", params);
   try {
     const payload = yield call(addExistingRaidTeam, params.team.raidValues);
     if(payload) {

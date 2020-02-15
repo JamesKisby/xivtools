@@ -13,6 +13,9 @@ import SupervisedUserCircleRoundedIcon from '@material-ui/icons/SupervisedUserCi
 
 
 export default function Sidebar({ match }) {
+  console.log("SDSDSDS");
+  console.log(process.env.REACT_APP_DISCORD_SCOPE);
+  console.log(process.env.REACT_APP_API);
   const [open, setOpen] = useState(false);
   const selector = useSelector(state => state.raid.userRaids);
   const formSelector = useSelector(state => state.form.raidChange);

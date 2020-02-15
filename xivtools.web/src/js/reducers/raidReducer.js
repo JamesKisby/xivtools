@@ -24,7 +24,7 @@ function raidReducer(state = initialState, action) {
   if(action.type == ACTION_TYPES.USER_RAID_ADDED) {
     return Object.assign({}, state, {
       userRaids: {
-        raidid: state.userRaids.raidid.concat("11111111111"),
+        raidid: state.userRaids.raidid.concat("1"),
         raidname: state.userRaids.raidname.concat("newraidname"),
         user: state.userRaids.user
       }

@@ -1,8 +1,6 @@
 import React, { useCallback } from "react";
 import { Card, Button } from "@material-ui/core";
-
-
-import { Discord } from "../utils/auth";
+import { Discord, api } from "../utils/auth";
 
 export default function Login() {
   const handleDiscordLogin = useCallback(async () => {
@@ -12,7 +10,7 @@ export default function Login() {
       `state=discord`
     ].join("&");
     try {
-      const response = await fetch(`http://127.0.0.1:5000/api/v1/auth-url/discord?${qParams}`)
+      const response = await fetch(api + `/auth-url/discord?${qParams}`)
         .then(response => response.json());
       //const url = await response.text();
 

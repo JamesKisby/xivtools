@@ -1,4 +1,6 @@
 export const Discord = {
-  REDIRECT_URI: "http://127.0.0.1:8080/oauth_callback",
-  SCOPE: "identify email"
+  REDIRECT_URI: process.env.REACT_APP_DISCORD_REDIRECT_URI,
+  SCOPE: process.env.REACT_APP_DISCORD_SCOPE
 };
+
+export const api = process.env.REACT_APP_API;
