@@ -16,11 +16,14 @@ export default function Sidebar({ match }) {
   const [open, setOpen] = useState(false);
   const selector = useSelector(state => state.raid.userRaids);
   const formSelector = useSelector(state => state.form.raidChange);
+  const authSelector = useSelector(state => state.auth.login_complete);
   const user = localStorage.getItem('user')
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getUsersRaids(user));
-  }, [user, formSelector]);
+    if(authSelector){
+      dispatch(getUsersRaids(user));
+    }
+  }, [user, formSelector, authSelector]);
   const handleClick = () => {
     setOpen(!open);
   };

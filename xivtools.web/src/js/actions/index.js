@@ -48,6 +48,13 @@ export function getUser(user) {
   }
 }
 
+export function loginComplete(val) {
+  return {
+    type: ACTION_TYPES.LOGIN_LOCKED,
+    val
+  }
+}
+
 export function getUsersRaids(raid) {
   return {
     type: ACTION_TYPES.USER_RAID_REQUESTED,

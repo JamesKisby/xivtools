@@ -129,6 +129,10 @@ function* logoutSuccess() {
   yield put({type: actions.LOGOUT_AUTH, payload: true})
 }
 
+function* loginComplete(val) {
+  yield put({type: actions.LOGIN_UNLOCKED, payload: val})
+}
+
 export default function* root() {
   yield all([
     takeEvery(actions.RAID_DATA_REQUESTED, LoadRaid),
@@ -138,6 +142,7 @@ export default function* root() {
     takeEvery(actions.ADD_EXISTING_RAID_TEAM, AddExistingTeamSaga),
     takeEvery(actions.REMOVE_RAID_TEAM, RemoveTeamSaga),
     takeEvery(actions.LOGIN_SUCCESS, loginSuccess),
-    takeEvery(actions.LOGOUT_SUCCESS, logoutSuccess)
+    takeEvery(actions.LOGOUT_SUCCESS, logoutSuccess),
+    takeEvery(actions.LOGIN_LOCKED, loginComplete)
   ])
 }

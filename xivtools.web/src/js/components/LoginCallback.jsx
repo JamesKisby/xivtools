@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { api } from "../utils/auth";
-import { loginSuccess } from "../actions/index";
+import { loginSuccess, loginComplete } from "../actions/index";
 
 
 export default function LoginCallback({ location }) {
@@ -10,11 +10,11 @@ export default function LoginCallback({ location }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(loginComplete(false))
     dispatch(loginSuccess())
-    fetch(api + `/callback/${location.search}`, {
-      credentials: "include"
-    })
+    fetch(api + `/callback/${location.search}`)
       .then(res => res.json())
+      .then(() => dispatch(loginComplete(true)))
       .catch(console.error);
   }, []);
 

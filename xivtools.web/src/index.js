@@ -17,6 +17,7 @@ render(
   <Provider store={store}>
     <Router>
       <div className="row">
+        <Route path="/oauth_callback" component={LoginCallback} />
         <div className="col-2 sidebar">
           <Sidebar />
         </div>
@@ -27,7 +28,7 @@ render(
           <Route path="/raid_tracker/team/:userid" component={RaidTracker} />
           <Route exact path="/raid_tracker/add_new_raid" component={NewRaidTeam} />
           <Route path="/login" component={Login} />
-          <Route path="/oauth_callback" component={LoginCallback} />
+
         </div>
       </div>
     </Router>

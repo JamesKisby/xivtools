@@ -4,7 +4,8 @@ import * as ACTION_TYPES from "../constants/action-type";
 const initialState = {
   is_authenticated: false,
   profile: null,
-  name: null
+  name: null,
+  login_complete: true
 };
 
 function authReducer(state = initialState, action) {
@@ -22,6 +23,11 @@ function authReducer(state = initialState, action) {
   if(action.type == ACTION_TYPES.LOGOUT_AUTH) {
     return Object.assign({}, state, {
       is_authenticated: false
+    });
+  }
+  if(action.type == ACTION_TYPES.LOGIN_UNLOCKED) {
+    return Object.assign({}, state, {
+      login_complete: action.payload.val
     });
   }
   if(action.type == ACTION_TYPES.ADD_PROFILE) {

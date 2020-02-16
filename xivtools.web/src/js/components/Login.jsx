@@ -1,8 +1,11 @@
 import React, { useCallback } from "react";
+import { useDispatch } from "react-redux";
+import { loginComplete } from "../actions/index";
 import { Card, Button } from "@material-ui/core";
 import { Discord, api } from "../utils/auth";
 
 export default function Login() {
+  const dispatch = useDispatch();
   const handleDiscordLogin = useCallback(async () => {
     const qParams = [
       `redirect_uri=${Discord.REDIRECT_URI}`,
@@ -12,7 +15,6 @@ export default function Login() {
     try {
       const response = await fetch(api + `/auth-url/discord?${qParams}`)
         .then(response => response.json());
-      //const url = await response.text();
 
       window.location.assign(response);
     } catch(e) {

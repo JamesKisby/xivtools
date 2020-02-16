@@ -41,7 +41,7 @@ def authFromCode():
     else:
         newUser = UserDataModel(user)
         newUser.save()
-    return ('', 200)
+    return custom_response({'callback': 'success'}, 200)
 
 
 @auth_api.route('/whoami/', methods=['GET'])
