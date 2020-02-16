@@ -15,6 +15,9 @@ marshmallow = "*"
 flask-bcrypt = "*"
 pyjwt = "*"
 flask-cors = "*"
+hashids = "*"
+requests = "*"
+requests-oauthlib = "*"
 
 [requires]
 python_version = "3.6"

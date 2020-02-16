@@ -66,7 +66,7 @@ def add_existing_raid():
     raid = RaidTrackerModel.get_tracker(request.values.get('raidid'))
     print("RAID",raid)
     data['raidid'] = [request.values.get('raidid')]
-    data['raidname'] = [raid.raidname]
+    data['raidname'] = [raid.raidname.lstrip('{').rstrip('}')]
     user.update(data)
     return ({'Raid_added': True}, 200)
 
