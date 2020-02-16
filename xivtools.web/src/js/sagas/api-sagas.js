@@ -32,8 +32,13 @@ function getRaidData(userid) {
 }
 
 function getUsersRaids(raid) {
-  return fetch(api + "/whoami/" + String(raid))
-    .then(response => response.json());
+  if(raid) {
+    return fetch(api + "/whoami/" + String(raid))
+      .then(response => response.json());
+  } else {
+    return null;
+  }
+
 }
 
 function addRaidTeam(raid) {

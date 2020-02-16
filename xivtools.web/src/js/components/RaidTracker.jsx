@@ -11,8 +11,7 @@ const RaidTracker = ({ match, location }) => {
   const raidSelector = useSelector(state => state.raid);
   const user = localStorage.getItem('user');
   const dispatch = useDispatch();
-  const loc = location.pathname.split("/")[3]
-  console.log(raidSelector.raidData);
+  const loc = location.pathname.split("/")[3];
   const deleteRaid = () => {
     dispatch(removeRaidTeam({raidid: match.params.userid, user: user}));
   }

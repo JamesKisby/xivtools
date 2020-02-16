@@ -8,7 +8,6 @@ auth_api = Blueprint('auth',__name__)
 
 @auth_api.route('/auth-url/<string:provider>', methods=['GET'])
 def authRoute(provider):
-    print("IN AUTH ROUTE")
     if provider == 'discord':
         scope = request.args.get('scope')
         state = request.args.get('state')
@@ -20,8 +19,6 @@ def authRoute(provider):
 
 @auth_api.route('/callback/', methods=['GET'])
 def authFromCode():
-    print("IN CALLBACK")
-
     if request.values.get('error'):
         return request.values['error']
     discord = make_session(state=session.get('oauth2_state'))
@@ -31,9 +28,7 @@ def authFromCode():
         authorization_response = request.url
     )
     session['oauth2_token'] = token
-    print("TOKEN!", token)
     session['code'] = request.values['code']
-    print("IN ME", session.get('code'))
     discord = make_session(token=session.get('oauth2_token'))
     user = discord.get(os.environ['DISCORD.API_BASE'] + '/users/@me').json()
     exists = UserDataModel.get_raid_tracker(user['username'])
@@ -42,10 +37,8 @@ def authFromCode():
     user['refresh'] = session.get('oauth2_token')['refresh_token']
     user['expires'] = session.get('oauth2_token')['expires_at']
     if exists:
-        print("EXISTS UPDATING USER")
         exists.update(user)
     else:
-        print("DOESNT EXIST ADDING USER")
         newUser = UserDataModel(user)
         newUser.save()
     return ('', 200)

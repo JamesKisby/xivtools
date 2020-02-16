@@ -135,7 +135,6 @@ class ItemModel(db.Model):
 
     def updateCraft():
         rows = db.session.query(ItemModel).count()
-        print("Rows",rows)
         for i in range(rows):
             x = db.session.query(ItemModel).get(i)
             recipe = db.session.query(
@@ -147,13 +146,11 @@ class ItemModel(db.Model):
             RecipeLookupModel.unk5.label('wvr'),
             RecipeLookupModel.unk6.label('alc'),
             RecipeLookupModel.unk7.label('cul')).filter(RecipeLookupModel.id == i).first()
-            #print(recipe)
             if recipe:
                 x.iscraftable = True
                 x.craftid = list(recipe)
             else:
                 x.iscraftable = False
-            print(x.id, x.iscraftable)
             db.session.commit()
 
 

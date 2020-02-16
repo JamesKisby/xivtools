@@ -28,7 +28,6 @@ class RaidTrackerModel(db.Model):
         db.session.commit()
 
     def update(self, data):
-        print("IN UPDATE")
         self.itemquantity = self.itemquantity + data['itemquantity']
         db.session.commit()
 
@@ -92,7 +91,6 @@ class RaidDropsModel(db.Model):
         db.session.commit()
 
     def update(self, data):
-        print("IN UPDATE")
         self.itemquantity = self.itemquantity + data['itemquantity']
         db.session.commit()
 

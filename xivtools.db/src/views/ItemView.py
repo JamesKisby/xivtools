@@ -30,9 +30,7 @@ def create():
 @item_api.route('/', methods=['GET'])
 def get_all():
     items = ItemModel.get_limit(20)
-    print("ITEMS TYPE",type(items))
     ser_data = item_schema.dump(items, many=True)
-    print("SER_DATA TYPE",type(ser_data))
     return custom_response(ser_data, 200)
 
 
@@ -43,7 +41,6 @@ def get_item(item_id):
     if not item:
         return custom_response({'error': 'Item not found'}, 404)
     ser_data = {"item":item_schema.dump(item)}
-    print(ser_data)
     if item.iscraftable:
         for id in ser_data["item"]["craftid"]:
             if id != 0:
@@ -65,13 +62,11 @@ def getIngredients(data,recipe, amountRequired=1):
         name = data["itemingredient"+str(i)]
         amount = data["amountingredient"+str(i)]
         if name:
-            print("GETTING ITEM",name)
             ingredient = item_schema.dump(ItemModel.get_ingredient(name))
             rec = {}
             if ingredient["iscraftable"]:
                 for id in ingredient["craftid"]:
                     if id != 0:
-                        print("GETTING RECIPE",name)
                         rec = id
                         #rec = recipe_schema.dump(RecipeModel.get_one(id))
                         break
@@ -117,5 +112,4 @@ def custom_response(res, status_code):
 
 
 def updateCraft():
-    print("UPDATING.....")
     ItemModel.updateCraft()

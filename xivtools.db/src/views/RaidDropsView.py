@@ -64,7 +64,6 @@ def add_existing_raid():
         return ('No user', 400)
     data = {}
     raid = RaidTrackerModel.get_tracker(request.values.get('raidid'))
-    print("RAID",raid)
     data['raidid'] = [request.values.get('raidid')]
     data['raidname'] = [raid.raidname.lstrip('{').rstrip('}')]
     user.update(data)
@@ -75,7 +74,6 @@ def remove_raid():
     if not request.values.get('code'):
         return ('', 400)
     user = UserDataModel.get_by_token(request.values.get('code'))
-    print("USER", request.values.get('name'))
     if not user:
         return ('No user', 400)
     data,index = {},[]
@@ -106,8 +104,6 @@ def get_raid(playerid):
     if not ser_data:
         return custom_response({'error': 'raid empty'}, 200)
 
-    print(ser_data)
-    #for data in ser_data:
     a = []
     names = [x['playername'] for x in ser_data]
     keys = ser_data[0].keys()
@@ -118,15 +114,12 @@ def get_raid(playerid):
             c['playername'] = names[i]
             c['icons'] = '/assets/icons/' + icons[-2] + "/" + icons[-1].replace("tex","png")
         a.append(b)
-    print(a)
-    print(json.dumps(a))
     return custom_response(a, 200)
 
 
 @raid_api.route('/test', methods=['POST'])
 def set_test():
     req_data = request.get_json()
-    print(req_data)
     if not 'Actor' in req_data[0]['XIVEvent']:
         return custom_response({'error':'no drops'}, 400)
     data = {}
