@@ -23,6 +23,7 @@ class Production(object):
     TESTING = False
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    SECRET_KEY = os.environ['DISCORD.CLIENT_SECRET']
     OAUTHLIB_INSECURE_TRANSPORT = False
 
 app_config = {
