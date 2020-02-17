@@ -133,6 +133,11 @@ function* loginComplete(val) {
   yield put({type: actions.LOGIN_UNLOCKED, payload: val})
 }
 
+function* drawerOpen(val) {
+  console.log("setting action", val);
+  yield put({type: actions.DRAWER_MOVED, payload: val})
+}
+
 export default function* root() {
   yield all([
     takeEvery(actions.RAID_DATA_REQUESTED, LoadRaid),
@@ -143,6 +148,7 @@ export default function* root() {
     takeEvery(actions.REMOVE_RAID_TEAM, RemoveTeamSaga),
     takeEvery(actions.LOGIN_SUCCESS, loginSuccess),
     takeEvery(actions.LOGOUT_SUCCESS, logoutSuccess),
-    takeEvery(actions.LOGIN_LOCKED, loginComplete)
+    takeEvery(actions.LOGIN_LOCKED, loginComplete),
+    takeEvery(actions.DRAWER, drawerOpen)
   ])
 }

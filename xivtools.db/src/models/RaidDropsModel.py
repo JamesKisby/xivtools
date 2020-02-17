@@ -114,7 +114,7 @@ class RaidDropsModel(db.Model):
             #RaidDropsModel.id,
             RaidDropsModel.name.label('playername'),
             #RaidDropsModel.world.label('playerworld'),
-            #RaidDropsModel.isreporter,
+            db.func.array_agg(RaidDropsModel.time).label('time'),
             #RaidDropsModel.itemquantity,
             #RaidDropsModel.playerid,
             db.func.array_agg(aggregate_order_by(ItemModel.name, ItemModel.equipslotcategory)).label('itemnames'),

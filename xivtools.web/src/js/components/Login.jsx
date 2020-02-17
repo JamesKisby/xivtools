@@ -24,7 +24,7 @@ export default function Login() {
 
 
   return (
-      <div>
+      <div className="col-12">
         <Button variant="contained" color="primary" onClick={handleDiscordLogin}>
           Login with Discord
         </Button>

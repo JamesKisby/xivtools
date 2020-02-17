@@ -1,3 +1,5 @@
+export const DRAWER = "DRAWER";
+export const DRAWER_MOVED = "DRAWER_MOVED";
 export const ADD_ARTICLE = "ADD_ARTICLE";
 export const DATA_LOADED = "DATA_LOADED";
 export const RAID_DATA_LOADED = "RAID_DATA_LOADED";

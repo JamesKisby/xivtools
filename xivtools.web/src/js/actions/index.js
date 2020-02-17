@@ -55,6 +55,13 @@ export function loginComplete(val) {
   }
 }
 
+export function drawerOpen(val) {
+  return {
+    type: ACTION_TYPES.DRAWER,
+    val
+  }
+}
+
 export function getUsersRaids(raid) {
   return {
     type: ACTION_TYPES.USER_RAID_REQUESTED,
