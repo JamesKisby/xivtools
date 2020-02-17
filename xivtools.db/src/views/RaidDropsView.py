@@ -122,7 +122,7 @@ def get_raid(playerid):
     return custom_response(a, 200)
 
 
-@raid_api.route('/test', methods=['POST'])
+@raid_api.route('/tracker', methods=['POST'])
 def set_test():
     req_data = request.get_json()
     if not 'Actor' in req_data[0]['XIVEvent']:
