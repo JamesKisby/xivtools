@@ -33,6 +33,17 @@ def get_all():
     ser_data = item_schema.dump(items, many=True)
     return custom_response(ser_data, 200)
 
+@item_api.route('/search', methods=['GET'])
+def get_page():
+    text = request.values.get('text')
+    page = request.values.get('page')
+    filter = request.values.get('filter')
+    if not all((text,page)):
+        return({'error': 'No text/page'}, 400)
+
+    items = ItemModel.getPage(page, text, filter=filter)
+    items = item_schema.dump(items, many=True)
+    return custom_response(items, 200)
 
 @item_api.route('/<int:item_id>', methods=['GET'])
 def get_item(item_id):

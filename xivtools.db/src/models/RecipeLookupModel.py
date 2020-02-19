@@ -14,7 +14,7 @@ class RecipeLookupModel(db.Model):
     unk5 = db.Column(db.Integer)    #wvr
     unk6 = db.Column(db.Integer)    #alc
     unk7 = db.Column(db.Integer)    #cul
-    
+
 
 
 

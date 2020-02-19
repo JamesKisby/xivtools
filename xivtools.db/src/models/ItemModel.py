@@ -30,7 +30,7 @@ class ItemModel(db.Model):
     isunique = db.Column(db.Boolean)
     isuntradable = db.Column(db.Boolean)
     isindisposable = db.Column(db.Boolean)
-    isequippable = db.Column(db.Boolean)
+    lot = db.Column(db.Boolean) #isequippable
     pricemid = db.Column(db.Integer)
     pricelow = db.Column(db.Integer)
     canbehq = db.Column(db.Boolean)
@@ -43,11 +43,12 @@ class ItemModel(db.Model):
     itemrepair = db.Column(db.Text)
     itemglamour = db.Column(db.Text)
     salvage = db.Column(db.SMALLINT)
+    unk36 = db.Column(db.SMALLINT)
     iscollectable = db.Column(db.Boolean)
     alwayscollectable = db.Column(db.Boolean)
     aetherialreduce = db.Column(db.SMALLINT)
     levelequip = db.Column(db.SMALLINT)
-    unk40 = db.Column(db.SMALLINT)
+    unk41 = db.Column(db.SMALLINT)
     equiprestriction = db.Column(db.SMALLINT)
     classjobcategory = db.Column(db.Text)
     grandcompany = db.Column(db.Text)
@@ -56,11 +57,11 @@ class ItemModel(db.Model):
     modelmain = db.Column(db.ARRAY(db.Integer))
     modelsub = db.Column(db.ARRAY(db.Integer))
     classjobuse = db.Column(db.Text)
-    unk49 = db.Column(db.SMALLINT)
+    unk50 = db.Column(db.SMALLINT)
     damagephys = db.Column(db.SMALLINT)
     damagemag = db.Column(db.SMALLINT)
     delayms = db.Column(db.SMALLINT)
-    unk53 = db.Column(db.SMALLINT)
+    unk54 = db.Column(db.SMALLINT)
     blockrate = db.Column(db.SMALLINT)
     block = db.Column(db.SMALLINT)
     defensephys = db.Column(db.SMALLINT)
@@ -95,7 +96,7 @@ class ItemModel(db.Model):
     materiaslotcount = db.Column(db.SMALLINT)
     isadvancedmeldingpermitted = db.Column(db.Boolean)
     ispvp = db.Column(db.Boolean)
-    unk88 = db.Column(db.SMALLINT)
+    unk89 = db.Column(db.SMALLINT)
     isglamourous = db.Column(db.Boolean)
     iscraftable = db.Column(db.Boolean)
     craftid = db.Column(db.ARRAY(db.Integer))
@@ -131,6 +132,17 @@ class ItemModel(db.Model):
             ItemModel.equiprestriction,
             ItemModel.classjobcategory
         ).filter(ItemModel.id == id).first()
+
+    def getPage(page, text, filter=None):
+        q = db.session.query(
+            ItemModel.id,
+            ItemModel.name,
+            ItemModel.levelitem,
+            ItemModel.itemuicategory
+        ).filter(
+            ItemModel.name.like("{}%".format(text)))
+        print(q)
+        return q.limit(100).offset(4)
 
 
     def updateCraft():
@@ -208,11 +220,12 @@ class ItemSchema(Schema):
     itemrepair = fields.Str(required=True)
     itemglamour = fields.Str(required=True)
     salvage = fields.Int(required=True)
+    unk36 = fields.Int(required=True)
     iscollectable = fields.Boolean(required=True)
     alwayscollectable = fields.Boolean(required=True)
     aetherialreduce = fields.Int(required=True)
     levelequip = fields.Int(required=True)
-    unk40 = fields.Int(required=True)
+    unk41 = fields.Int(required=True)
     equiprestriction = fields.Int(required=True)
     classjobcategory = fields.Str(required=True)
     grandcompany = fields.Str(required=True)
@@ -221,11 +234,11 @@ class ItemSchema(Schema):
     modelmain = fields.List(fields.Int(), required=True)
     modelsub = fields.List(fields.Int(), required=True)
     classjobuse = fields.Str(required=True)
-    unk49 = fields.Int(required=True)
+    unk50 = fields.Int(required=True)
     damagephys = fields.Int(required=True)
     damagemag = fields.Int(required=True)
     delayms = fields.Int(required=True)
-    unk53 = fields.Int(required=True)
+    unk54 = fields.Int(required=True)
     blockrate = fields.Int(required=True)
     block = fields.Int(required=True)
     defensephys = fields.Int(required=True)
@@ -260,7 +273,7 @@ class ItemSchema(Schema):
     materiaslotcount = fields.Int(required=True)
     isadvancedmeldingpermitted = fields.Boolean(required=True)
     ispvp = fields.Boolean(required=True)
-    unk88 = fields.Int(required=True)
+    unk89 = fields.Int(required=True)
     isglamourous = fields.Boolean(required=True)
     iscraftable = fields.Boolean(required=True)
     craftid = fields.List(fields.Int(), required=True)

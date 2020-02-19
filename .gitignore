@@ -3,3 +3,4 @@ xivtools.web/assets
 xivtools.db/.env
 xivtools.web/.env
 xivtools.web/dist
+tools

@@ -41,11 +41,12 @@ def exportData(filename):
     with open(file) as f:
         data = f.readlines()
 
-    table = filename.lower()
-    cols = config.get[filename]
-    cols = data[1]
+    table = filename.lower() + "temp"
+    #colsFinal = config.get[filename]
+    cols = ast.literal_eval(data[1])
     data = ast.literal_eval(data[2])
     res = []
+
 
     for i in range(0,len(data[cols[0]])):
         r = [arrReturn(a,data[a][i],filename) for a in cols]
@@ -82,3 +83,18 @@ def exportData(filename):
 
 filename = str(sys.argv[1])
 exportData(filename)
+
+
+
+
+'''
+check table columns are still correct after update. compare Model to exports
+migrate db if changes made
+in psql: create table itemtemp as table item with no data; (for each table)
+run this script to insert new data into temp tables
+alter table item rename to itemold;
+alter table itemtemp rename to item;
+if working, send temp tables to prod;
+alter table names same way
+if working can drop table itemold;
+'''
