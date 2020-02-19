@@ -92,9 +92,26 @@ check table columns are still correct after update. compare Model to exports
 migrate db if changes made
 in psql: create table itemtemp as table item with no data; (for each table)
 run this script to insert new data into temp tables
-alter table item rename to itemold;
-alter table itemtemp rename to item;
-if working, send temp tables to prod;
-alter table names same way
-if working can drop table itemold;
+update rows:
+    update item setname = itemtemp.name, etc tec.. from itemtemp where item.id = itemtemp.id;
+
+insert new rows:
+    insert into item select * from itemtemp where itemtemp.id not in (select id from item);
+
+(to get column names):
+SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'item';
+if works repeat on prod
+****
+schema on InsertUpdateNewRecords in files
+***
+old..........................
+#alter table item rename to itemold;
+#alter table itemtemp rename to item;
+#if working, remove itemold tables. push to git pull on prod;
+#run script again to  recreate temp tables;
+#send temp tables and icon updates to prod;
+#migrate data on prod;
+#alter table names same way
+#if working can drop table itemold;
+..............................
 '''
