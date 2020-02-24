@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getUsersRaids, drawerOpen } from "../actions/index";
+import ItemSearch from "./ItemSearch";
+import { getUsersRaids, drawerOpen, logoutSuccess } from "../actions/index";
 import Divider from "@material-ui/core/Divider";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from '@material-ui/core/Drawer';
@@ -13,10 +14,17 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import IconButton from "@material-ui/core/IconButton";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Box from "@material-ui/core/Box";
+import Hidden from "@material-ui/core/Hidden";
 import Typography from "@material-ui/core/Typography";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import AddBoxOutlined from '@material-ui/icons/AddBoxOutlined';
+import Popover from '@material-ui/core/Popover';
+import Search from "@material-ui/icons/Search";
+import Home from "@material-ui/icons/Home";
+import FaceIcon from "@material-ui/icons/Face";
+import ViewList from "@material-ui/icons/ViewList";
 import SupervisedUserCircleRoundedIcon from '@material-ui/icons/SupervisedUserCircleRounded';
 import back1 from "../../images/toolbar1.png";
 import back2 from "../../images/toolbar2.png";
@@ -56,7 +64,7 @@ const useStyles = makeStyles(theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    width: theme.spacing(7),
+    width: theme.spacing(0),
     [theme.breakpoints.up('sm')]: {
       width: theme.spacing(9),
     }
@@ -64,6 +72,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Sidebar(props) {
+  const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(true);
   const openSelector = useSelector(state => state.form.open);
   const theme = useTheme();
@@ -71,9 +80,26 @@ export default function Sidebar(props) {
   const { container } = props;
   const selector = useSelector(state => state.raid.userRaids);
   const formSelector = useSelector(state => state.form.raidChange);
-  const authSelector = useSelector(state => state.auth.login_complete);
+  const authSelector = useSelector(state => state.auth);
   const user = localStorage.getItem('user');
   const dispatch = useDispatch();
+
+  const handleSearchClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const openPop = Boolean(anchorEl);
+  const id = openPop ? 'simple-popover' : undefined;
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    dispatch(logoutSuccess());
+    dispatch(getUsersRaids());
+  };
 
   const handleDrawerClose = () => {
     console.log("drawer close clicked");
@@ -82,10 +108,10 @@ export default function Sidebar(props) {
 
 
   useEffect(() => {
-    if(authSelector){
+    if(authSelector.login_complete){
       dispatch(getUsersRaids(user));
     }
-  }, [user, formSelector, authSelector]);
+  }, [user, formSelector, authSelector.login_complete]);
   const handleClick = () => {
     setOpen(!open);
   };
@@ -107,44 +133,65 @@ export default function Sidebar(props) {
         <Divider />
         <List>
           <ListItem button component={Link} to="/">
+            <ListItemIcon>
+              <Home />
+            </ListItemIcon>
             <ListItemText>
-            <Typography component="h1" variant="h6" color="inherit" noWrap>
-              Home
-            </Typography>
+              <Typography component="h1" variant="h6" color="inherit" noWrap>
+                Home
+              </Typography>
             </ListItemText>
           </ListItem>
         </List>
         <Divider />
         <List>
+          <ListItem button onClick={handleSearchClick}>
+            <ListItemIcon>
+              <Search />
+            </ListItemIcon>
+            <ListItemText primary="Search" />
+          </ListItem>
+          <Popover
+            id={id}
+            open={openPop}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+          >
+            <ItemSearch />
+          </Popover>
+        </List>
+        <Divider />
+        <List>
           <ListItem button onClick={handleClick}>
-            <Box component="span" visibility={!openSelector ? "hidden" : "visible"}>
-              <ListItemText primary="Raid Tracker" />
-            </Box>
+            <ListItemIcon>
+              <ViewList />
+            </ListItemIcon>
+            <ListItemText primary="Raid Tracker" />
             {open ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <List disablePadding dense>
+            <List disablePadding>
               <ListItem style={{ paddingLeft: 36 }} button component={Link} to={`/raid_tracker/add_new_raid`}>
-                <ListItemText>
+                <ListItemIcon>
                   <AddBoxOutlined />
-                  <Box component="span" visibility={!openSelector ? "hidden" : "visible"}>
-                    <Typography component="h1" variant="button" color="inherit" noWrap>
-                      Add New Raid Team
-                      </Typography>
-                  </Box>
-                </ListItemText>
+                </ListItemIcon>
+                <ListItemText primary="Add New Raid" />
               </ListItem>
               {"raidid" in selector && selector.raidid != null ? (
                 selector.raidid.map((el, ind) => (
                   <ListItem key={el} style={{ paddingLeft: 36 }} button component={Link} to={`/raid_tracker/team/${el}`}>
-                    <ListItemText>
+                    <ListItemIcon>
                       <SupervisedUserCircleRoundedIcon />
-                      <Box component="span" visibility={!openSelector ? "hidden" : "visible"}>
-                        <Typography component="h1" variant="button" color="inherit" noWrap className={classes.title}>
-                          {selector.raidname[ind]}
-                        </Typography>
-                      </Box>
-                    </ListItemText>
+                    </ListItemIcon>
+                    <ListItemText primary={selector.raidname[ind]} />
                   </ListItem>
                 ))) :
                 null
@@ -152,6 +199,26 @@ export default function Sidebar(props) {
             </List>
           </Collapse>
         </List>
+        <Divider />
+        <Hidden mdUp>
+          <List>
+            {authSelector.is_authenticated ? (
+              <ListItem button onClick={handleLogout}>
+                <ListItemIcon>
+                  <FaceIcon />
+                </ListItemIcon>
+                <ListItemText primary="Sign Out" />
+              </ListItem>
+            ) : (
+              <ListItem button component={Link} to="/login">
+                <ListItemIcon>
+                  <FaceIcon />
+                </ListItemIcon>
+                <ListItemText primary="Sign In" />
+              </ListItem>
+            )}
+          </List>
+        </Hidden>
         <Divider />
       </Drawer>
   );

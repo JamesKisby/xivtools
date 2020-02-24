@@ -9,6 +9,7 @@ import Navbar from "./js/components/Navbar";
 import RaidTracker from "./js/components/RaidTracker";
 import NewRaidTeam from "./js/components/NewRaidTeam";
 import Login from "./js/components/Login";
+import ItemSearch from "./js/components/ItemSearch";
 import LoginCallback from "./js/components/LoginCallback";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -51,6 +52,7 @@ function Index() {
               <Route exact path="/" component={App} />
               <Route path="/raid_tracker/team/:userid" component={RaidTracker} />
               <Route exact path="/raid_tracker/add_new_raid" component={NewRaidTeam} />
+              <Route exact path="/search" component={ItemSearch} />
               <Route path="/login" component={Login} />
             </Container>
           </main>

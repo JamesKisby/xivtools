@@ -41,8 +41,11 @@ def get_page():
     if not all((text,page)):
         return({'error': 'No text/page'}, 400)
 
-    items = ItemModel.getPage(page, text, filter=filter)
+    items = ItemModel.getPage(page, text.lower(), filter=filter)
     items = item_schema.dump(items, many=True)
+    for item in items:
+        icon = item['icon'].split("/")
+        item['icon'] = '/assets/icons/' + icon[-2] + "/" + icon[-1].replace("tex","png")
     return custom_response(items, 200)
 
 @item_api.route('/<int:item_id>', methods=['GET'])

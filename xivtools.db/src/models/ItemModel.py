@@ -138,9 +138,10 @@ class ItemModel(db.Model):
             ItemModel.id,
             ItemModel.name,
             ItemModel.levelitem,
-            ItemModel.itemuicategory
+            ItemModel.itemuicategory,
+            ItemModel.icon
         ).filter(
-            ItemModel.name.like("{}%".format(text)))
+            db.func.lower(ItemModel.name).like("{}%".format(text)))
         print(q)
         return q.limit(100).offset(4)
 

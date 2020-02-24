@@ -13,6 +13,7 @@ class RaidTrackerModel(db.Model):
     userid = db.Column(db.Text)
     raidname = db.Column(db.Text)
     trackerid = db.Column(db.Text)
+    trackerpw = db.Column(db.Text)
     owner = db.Column(db.ARRAY(db.Text))
     isactive = db.Column(db.Boolean)
 
@@ -20,6 +21,7 @@ class RaidTrackerModel(db.Model):
         self.userid = data['userid']
         self.raidname = data['raidname']
         self.trackerid = data['raidid'][0]
+        self.trackerpw = data['trackerpw'][0]
         self.owner = data['owner']
         self.isactive = data['isactive']
 
@@ -54,6 +56,7 @@ class RaidTrackerSchema(Schema):
     userid = fields.Str(required=True)
     raidname = fields.Str(required=True)
     trackerid = fields.Str(required=True)
+    trackerpw = fields.Str(required=True)
     owner = fields.List(fields.Str(), required=True)
     isactive = fields.Boolean(required=True)
 

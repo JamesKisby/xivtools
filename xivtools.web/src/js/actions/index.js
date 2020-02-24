@@ -34,10 +34,11 @@ export function getData() {
   }
 };
 
-export function getRaidData(userid) {
+export function getRaidData(raid) {
+  console.log("getraidata", raid);
   return {
     type: ACTION_TYPES.RAID_DATA_REQUESTED,
-    userid
+    raid
   }
 }
 
@@ -45,6 +46,13 @@ export function getUser(user) {
   return {
     type: ACTION_TYPES.LOGIN_REQUESTED,
     user
+  }
+}
+
+export function searchItems(search) {
+  return {
+    type: ACTION_TYPES.ITEM_SEARCH,
+    search
   }
 }
 

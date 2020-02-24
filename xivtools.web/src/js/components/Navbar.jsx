@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import Logo from "../../images/xivtools-logo-m.png";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
+import Hidden from "@material-ui/core/Hidden";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
@@ -82,6 +83,7 @@ export default function Navbar() {
             XIVTOOLS
           </Typography>
         </Box>
+        <Box component="span" display={{xs: 'none', sm: 'none', md: 'block'}}>
         {selector.is_authenticated ? (
           <>
             <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
@@ -98,6 +100,7 @@ export default function Navbar() {
             </Button>
           </Link>
         )}
+        </Box>
       </Toolbar>
     </AppBar>
   );

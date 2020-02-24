@@ -36,12 +36,12 @@ const RaidTracker = ({ match, location }) => {
     dispatch(addExistingRaidTeam({raidValues}));
   }
   useEffect(() => {
-    dispatch(getRaidData(match.params.userid));
+    dispatch(getRaidData({raidid: match.params.userid, user: user }));
   }, [match.params.userid]);
-
+    console.log("RAID SELECTOR", raidSelector);
   return (
     <>
-        {'error' in raidSelector.raidData && raidSelector.raidData.error === 'raid not found' ? (
+        {!raidSelector.raidData.raidfound ? (
           <Grid container spacing={2}>
           <Grid item xs={12}>
             <Paper className={classes.paper}>
@@ -53,17 +53,29 @@ const RaidTracker = ({ match, location }) => {
           </Grid>
         ) : (
           <>
-          <Grid item xs={12}>
-            <Typography component="h1" variant="h5" color="inherit" noWrap>
-              YOUR RAID ID: {match.params.userid}
-            </Typography>
-          </Grid>
+          {raidSelector.raidData.trackerpw ? (
+            <Grid item xs={12}>
+              <Typography component="h1" variant="h5" color="inherit" noWrap>
+                YOUR RAID ID: {raidSelector.raidData.trackerpw}
+              </Typography>
+            </Grid>
+          ) : null}
           <Grid container spacing={2}>
-          {'error' in raidSelector.raidData ? (
-            <RaidInstructions userid={match.params.userid}/>
+          {!raidSelector.raidData.players ? (
+            <>
+            {raidSelector.raidData.trackerpw ? (
+              <RaidInstructions userid={match.params.userid}/>
+            ) : (
+              <Grid item xs={12}>
+                <Typography component="h1" variant="h5" color="inherit" noWrap>
+                  No Data Yet...
+                </Typography>
+              </Grid>
+            )}
+            </>
           ) : (
             <>
-              {raidSelector.raidData.map((el,ind) => (
+              {raidSelector.raidData.players.map((el,ind) => (
                 <RaidTrackerInd key={ind} name={el[0].playername} el={el}/>
               ))}
             </>

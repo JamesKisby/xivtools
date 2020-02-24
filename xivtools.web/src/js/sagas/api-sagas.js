@@ -26,8 +26,10 @@ function getData() {
     .then(response => response.json());
 }
 
-function getRaidData(userid) {
-  return fetch(api + "/raid/" + String(userid))
+function getRaidData(raid) {
+  console.log("getraiddata saga", raid);
+  if(!raid.user) raid.user = "?/code=";
+  return fetch(api + "/raid/" + String(raid.user) + "&id=" + String(raid.raidid))
     .then(response => response.json());
 }
 
@@ -56,9 +58,16 @@ function removeRaidTeam(raid) {
     .then(response => response.json());
 }
 
+function searchItems(searchValues) {
+  console.log("in searchvalues", searchValues);
+  return fetch(api + "/items/search" + "?text=" + String(searchValues.search) + "&page=" + String(searchValues.page))
+    .then(response => response.json());
+}
+
 function* LoadRaid(params) {
+  console.log("LoadRaid", params);
   try {
-    const payload = yield call(getRaidData, params.userid);
+    const payload = yield call(getRaidData, params.raid);
     if(payload) {
       yield put({type: actions.RAID_DATA_LOADED, payload});
     } else {
@@ -121,6 +130,20 @@ function* RemoveTeamSaga(params) {
   }
 }
 
+function* ItemSearch(params) {
+  console.log("ItemSearch", params);
+  try {
+    const payload = yield call(searchItems, params.search.searchValues);
+    if(payload) {
+      yield put({type: actions.ITEM_SEARCH_SUCCESS, payload});
+    } else {
+      throw payload;
+    }
+  } catch(e) {
+    yield put({type: actions.ITEM_SEARCH_FAILED, payload: e})
+  }
+}
+
 function* loginSuccess() {
   yield put({type: actions.LOGIN_AUTH, payload: true})
 }
@@ -149,6 +172,7 @@ export default function* root() {
     takeEvery(actions.LOGIN_SUCCESS, loginSuccess),
     takeEvery(actions.LOGOUT_SUCCESS, logoutSuccess),
     takeEvery(actions.LOGIN_LOCKED, loginComplete),
-    takeEvery(actions.DRAWER, drawerOpen)
+    takeEvery(actions.DRAWER, drawerOpen),
+    takeEvery(actions.ITEM_SEARCH, ItemSearch)
   ])
 }

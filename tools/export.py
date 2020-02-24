@@ -100,18 +100,14 @@ insert new rows:
 
 (to get column names):
 SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'item';
-if works repeat on prod
+if works, push, and pull on prod. migrate to update tables.
+sudo pg_dump -U brownstone ffxiv -t "*temp" > /home/jkisby/Documents/files/xivtmp.bak,
+use to update temp tables on prod.
+repeat update/insert statements and delete temp tables.
+rsync icon updates
+
+
 ****
 schema on InsertUpdateNewRecords in files
 ***
-old..........................
-#alter table item rename to itemold;
-#alter table itemtemp rename to item;
-#if working, remove itemold tables. push to git pull on prod;
-#run script again to  recreate temp tables;
-#send temp tables and icon updates to prod;
-#migrate data on prod;
-#alter table names same way
-#if working can drop table itemold;
-..............................
 '''

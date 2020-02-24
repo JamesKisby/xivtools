@@ -9,6 +9,7 @@ from random import random
 
 raid_api = Blueprint('raid',__name__)
 raid_schema = RaidDropsSchema()
+user_schema = UserDataSchema()
 
 @raid_api.route('/', methods=['POST'])
 def create():
@@ -28,11 +29,7 @@ def create():
     return custom_response({'jwt_token': token}, 201)
 
 
-@raid_api.route('/', methods=['GET'])
-def get_all():
-    raids = RaidDropsModel.get_limit(20)
-    ser_data = raid_schema.dump(raids, many=True)
-    return custom_response(ser_data, 200)
+
 
 @raid_api.route('/add/', methods=['GET'])
 def add_raid():
@@ -45,9 +42,11 @@ def add_raid():
     salt = user.username + request.values.get('name')
     hashid = Hashids(salt=salt, min_length=10)
     l = int(random()* 1000000)
+    pw = int(random()* 100000000)
     data['raidname'] = [request.values.get('name')]
     data['raidid'] = [hashid.encode(l)]
     user.update(data)
+    data['trackerpw'] = [hashid.encode(pw)]
     data['isactive'] = True
     data['userid'] = user.userid
     data['owner'] = [user.userid]
@@ -82,6 +81,7 @@ def remove_raid():
         user.raidid.remove(request.values.get('raidid'))
         del user.raidname[index]
     data['raidname'] = user.raidname
+    data['userid'] = user.userid
     data['raidid'] = user.raidid
     data['pwhash'] = request.values.get('code')
     data['username'] = user.username
@@ -94,22 +94,31 @@ def remove_raid():
     return ({'Raid_removed': True}, 200)
 
 
-@raid_api.route('/<playerid>', methods=['GET'])
-def get_raid(playerid):
-    exists = RaidTrackerModel.get_tracker(playerid)
+@raid_api.route('/', methods=['GET'])
+def get_raid():
+    print(request.values.get('code'))
+    exists = RaidTrackerModel.get_tracker(request.values.get('id'))
     if not exists:
-        return custom_response({'error': 'raid not found'}, 400)
-    raid = RaidDropsModel.get_by_player(playerid)
+        return custom_response({'raidfound': 0}, 200)
+    raid = RaidDropsModel.get_by_player(exists.trackerpw)
     ser_data = raid_schema.dump(raid, many=True)
+    user = UserDataModel.get_by_token(request.values.get('code'))
+    a = {'raidfound': 1}
+    print("user",user.userid,"exists",exists.userid)
+    if user and user.userid == exists.userid:
+        a['trackerpw'] = exists.trackerpw
+    else:
+        a['trackerpw'] = None
     if not ser_data:
-        return custom_response({'error': 'raid empty'}, 200)
+        a['players'] = None
+        return custom_response(a, 200)
 
-    a = []
     names = [x['playername'] for x in ser_data]
     times = [x['time'] for x in ser_data]
     times = [*map(eval,times)]
     print(times)
     keys = ser_data[0].keys()
+    a['players'] = []
     for i,data in enumerate(ser_data):
         b = [dict(zip(keys, vals)) for vals in zip(*(data[k] for k in keys))]
         for j,c in enumerate(b):
@@ -118,13 +127,15 @@ def get_raid(playerid):
             c['time'] = str(times[i][j].date()) + "\n" + str(times[i][j].time())
             c['icons'] = '/assets/icons/' + icons[-2] + "/" + icons[-1].replace("tex","png")
 
-        a.append(b)
+        a['players'].append(b)
+
     return custom_response(a, 200)
 
 
 @raid_api.route('/tracker', methods=['POST'])
 def set_test():
     req_data = request.get_json()
+    print("JSON",req_data)
     if not 'Actor' in req_data[0]['XIVEvent']:
         return custom_response({'error':'no drops'}, 400)
     data = {}
