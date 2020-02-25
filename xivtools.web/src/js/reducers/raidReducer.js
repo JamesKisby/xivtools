@@ -7,7 +7,8 @@ const initialState = {
     raidid: [],
     raidname: [],
     user: null
-  }
+  },
+  update: []
 };
 
 function raidReducer(state = initialState, action) {
@@ -28,6 +29,11 @@ function raidReducer(state = initialState, action) {
         raidname: state.userRaids.raidname.concat("newraidname"),
         user: state.userRaids.user
       }
+    });
+  }
+  if(action.type == ACTION_TYPES.RAID_DATA_UPDATED) {
+    return Object.assign({}, state, {
+      update: state.update.concat(0)
     });
   }
   if(action.type == ACTION_TYPES.USER_RAID_DATA_FAILED) {
