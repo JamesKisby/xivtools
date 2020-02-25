@@ -48,6 +48,7 @@ const useStyles = makeStyles(theme => ({
   },
   drawerPaper: {
     background: `url(${images[rnd]})`,
+    backgroundColor: 'white',
     backgroundPosition: 'center bottom',
     backgroundRepeat: 'no-repeat',
     position: 'relative',

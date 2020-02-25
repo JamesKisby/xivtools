@@ -75,7 +75,7 @@ class RaidDropsModel(db.Model):
     itemid = db.Column(db.Integer, db.ForeignKey('item.id'))
     itemquantity = db.Column(db.SMALLINT)
     playerid = db.Column(db.Text)
-    #item = db.relationship("ItemModel", back_populates = "raiddrops")
+    view = db.Column(db.Boolean)
 
 
     def __init__(self, data):
@@ -88,6 +88,7 @@ class RaidDropsModel(db.Model):
         self.itemid = data.get('itemid')
         self.itemquantity = data.get('itemquantity')
         self.playerid = data.get('playerid')
+        self.view = data.get('view')
 
     def save(self):
         db.session.add(self)
@@ -95,6 +96,10 @@ class RaidDropsModel(db.Model):
 
     def update(self, data):
         self.itemquantity = self.itemquantity + data['itemquantity']
+        db.session.commit()
+
+    def updateView(self, data, view=True):
+        self.view = view
         db.session.commit()
 
     def delete(self):
@@ -117,14 +122,16 @@ class RaidDropsModel(db.Model):
             #RaidDropsModel.id,
             RaidDropsModel.name.label('playername'),
             #RaidDropsModel.world.label('playerworld'),
-            db.func.array_agg(RaidDropsModel.time).label('time'),
+            db.func.array_agg(aggregate_order_by(RaidDropsModel.time, ItemModel.name)).label('time'),
+            #db.func.array_agg(RaidDropsModel.itemid).label('idd'),
             #RaidDropsModel.itemquantity,
             #RaidDropsModel.playerid,
-            db.func.array_agg(aggregate_order_by(ItemModel.name, ItemModel.equipslotcategory)).label('itemnames'),
-            db.func.array_agg(aggregate_order_by(RaidDropsModel.itemquantity, ItemModel.equipslotcategory)).label('itemquantities'),
-            db.func.array_agg(aggregate_order_by(ItemModel.itemuicategory, ItemModel.equipslotcategory)).label('itemcategories'),
-            db.func.array_agg(aggregate_order_by(ItemModel.equipslotcategory, ItemModel.equipslotcategory)).label('equipcategories'),
-            db.func.array_agg(aggregate_order_by(ItemModel.icon, ItemModel.equipslotcategory)).label('icons'),
+            db.func.array_agg(aggregate_order_by(ItemModel.name, ItemModel.name)).label('itemnames'),
+            db.func.array_agg(aggregate_order_by(ItemModel.id, ItemModel.name)).label('ids'),
+            db.func.array_agg(aggregate_order_by(RaidDropsModel.itemquantity, ItemModel.name)).label('itemquantities'),
+            db.func.array_agg(aggregate_order_by(ItemModel.itemuicategory, ItemModel.name)).label('itemcategories'),
+            db.func.array_agg(aggregate_order_by(ItemModel.equipslotcategory, ItemModel.name)).label('equipcategories'),
+            db.func.array_agg(aggregate_order_by(ItemModel.icon, ItemModel.name)).label('icons'),
             #ItemModel.name.label('itemname'),
             #ItemModel.icon.label('itemicon'),
             #ItemModel.description.label('itemdescription'),
@@ -132,7 +139,8 @@ class RaidDropsModel(db.Model):
             #ItemModel.itemuicategory.label('itemcategory'),
         ).join(ItemModel).group_by(
             RaidDropsModel.name
-            ).filter(RaidDropsModel.playerid == str(playerid))
+            ).filter(RaidDropsModel.playerid == str(playerid),
+                     RaidDropsModel.view == True)
         return q
 
 
@@ -161,3 +169,5 @@ class RaidDropsSchema(Schema):
     itemcategories = fields.List(fields.Str(), required=True)
     equipcategories = fields.List(fields.Str(), required=True)
     icons = fields.List(fields.Str(), required=True)
+    ids = fields.List(fields.Int(), required=True)
+    view = fields.Boolean(required=True)

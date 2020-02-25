@@ -27,10 +27,16 @@ function getData() {
 }
 
 function getRaidData(raid) {
-  console.log("getraiddata saga", raid);
   if(!raid.user) raid.user = "?/code=";
   return fetch(api + "/raid/" + String(raid.user) + "&id=" + String(raid.raidid))
     .then(response => response.json());
+}
+
+function deleteRaidRows(raid) {
+  return fetch(api + "/raid/removeRows", {
+    method: 'post',
+    body: JSON.stringify(raid)
+  }).then(response => response.json());
 }
 
 function getUsersRaids(raid) {
@@ -59,13 +65,11 @@ function removeRaidTeam(raid) {
 }
 
 function searchItems(searchValues) {
-  console.log("in searchvalues", searchValues);
   return fetch(api + "/items/search" + "?text=" + String(searchValues.search) + "&page=" + String(searchValues.page))
     .then(response => response.json());
 }
 
 function* LoadRaid(params) {
-  console.log("LoadRaid", params);
   try {
     const payload = yield call(getRaidData, params.raid);
     if(payload) {
@@ -75,6 +79,19 @@ function* LoadRaid(params) {
     }
   } catch(e) {
     yield put({type: actions.API_ERRORED, payload: e})
+  }
+}
+
+function* DeleteRows(params) {
+  try {
+    const payload = yield call(deleteRaidRows, params);
+    if(payload) {
+      yield put({type: actions.RAID_ROWS_DELETED, payload});
+    } else {
+      throw payload;
+    }
+  } catch(e) {
+    yield put({type: actions.RAID_ROWS_DELETED_ERROR, payload: e})
   }
 }
 
@@ -131,7 +148,6 @@ function* RemoveTeamSaga(params) {
 }
 
 function* ItemSearch(params) {
-  console.log("ItemSearch", params);
   try {
     const payload = yield call(searchItems, params.search.searchValues);
     if(payload) {
@@ -157,7 +173,6 @@ function* loginComplete(val) {
 }
 
 function* drawerOpen(val) {
-  console.log("setting action", val);
   yield put({type: actions.DRAWER_MOVED, payload: val})
 }
 
@@ -173,6 +188,7 @@ export default function* root() {
     takeEvery(actions.LOGOUT_SUCCESS, logoutSuccess),
     takeEvery(actions.LOGIN_LOCKED, loginComplete),
     takeEvery(actions.DRAWER, drawerOpen),
-    takeEvery(actions.ITEM_SEARCH, ItemSearch)
+    takeEvery(actions.ITEM_SEARCH, ItemSearch),
+    takeEvery(actions.DELETE_RAID_ROWS, DeleteRows)
   ])
 }

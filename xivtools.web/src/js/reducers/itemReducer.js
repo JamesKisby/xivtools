@@ -7,7 +7,6 @@ const initialState = {
 
 function itemReducer(state = initialState, action) {
   if(action.type == ACTION_TYPES.ITEM_SEARCH_SUCCESS) {
-    console.log("items received", action)
     return Object.assign({}, state, {
       item: action.payload
     });

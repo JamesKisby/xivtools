@@ -38,7 +38,6 @@ const RaidTracker = ({ match, location }) => {
   useEffect(() => {
     dispatch(getRaidData({raidid: match.params.userid, user: user }));
   }, [match.params.userid]);
-    console.log("RAID SELECTOR", raidSelector);
   return (
     <>
         {!raidSelector.raidData.raidfound ? (
@@ -53,6 +52,11 @@ const RaidTracker = ({ match, location }) => {
           </Grid>
         ) : (
           <>
+          <Grid item xs={12}>
+            <Typography component="h1" variant="h5" color="inherit" noWrap>
+              {raidSelector.raidData.raidname}
+            </Typography>
+          </Grid>
           {raidSelector.raidData.trackerpw ? (
             <Grid item xs={12}>
               <Typography component="h1" variant="h5" color="inherit" noWrap>
@@ -76,7 +80,12 @@ const RaidTracker = ({ match, location }) => {
           ) : (
             <>
               {raidSelector.raidData.players.map((el,ind) => (
-                <RaidTrackerInd key={ind} name={el[0].playername} el={el}/>
+                <RaidTrackerInd
+                  key={ind}
+                  playerName={el[0].playername}
+                  el={el}
+                  pw={raidSelector.raidData.trackerpw}
+                />
               ))}
             </>
           )}

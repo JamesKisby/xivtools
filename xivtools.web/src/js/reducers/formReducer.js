@@ -30,7 +30,6 @@ function formReducer(state = initialState, action) {
     });
   }
   if(action.type == ACTION_TYPES.DRAWER_MOVED) {
-    console.log("Drawer opened set", action.payload.val);
     return Object.assign({}, state, {
       open: action.payload.val
     });

@@ -104,7 +104,7 @@ def get_raid():
     ser_data = raid_schema.dump(raid, many=True)
     user = UserDataModel.get_by_token(request.values.get('code'))
     a = {'raidfound': 1}
-    print("user",user.userid,"exists",exists.userid)
+    a['raidname'] = exists.raidname.lstrip("{").rstrip("}")
     if user and user.userid == exists.userid:
         a['trackerpw'] = exists.trackerpw
     else:
@@ -116,7 +116,7 @@ def get_raid():
     names = [x['playername'] for x in ser_data]
     times = [x['time'] for x in ser_data]
     times = [*map(eval,times)]
-    print(times)
+    print("ser_data", ser_data)
     keys = ser_data[0].keys()
     a['players'] = []
     for i,data in enumerate(ser_data):
@@ -155,13 +155,34 @@ def set_test():
     data['itemid'] = req_data[0]['XIVEvent']['Item']['Id']
     data['itemquantity'] = req_data[0]['XIVEvent']['Item']['Quantity']
     data['playerid'] = req_data[1]
+    data['view'] = True
 
     raiddrop = RaidDropsModel(data)
     raid = RaidDropsModel.get_one(data)
-    if raid:
+    if raid and raid.view:
         raid.update(data)
     else:
         raiddrop.save()
+    return ('', 204)
+
+@raid_api.route('/removeRows', methods=['POST'])
+def remove_rows():
+    data = request.get_json(force=True)['rows']
+    print("DATA",data)
+    rows = data['rows']
+    userid = data['data']['user'].split("=")[1].split("&")[0]
+    user = UserDataModel.get_by_token(userid)
+    if not user:
+        return ('no user', 404)
+
+    reqdata = {}
+    reqdata['name'] = data['data']['name']
+    reqdata['playerid'] = data['data']['pw']
+    for row in rows:
+        reqdata['itemid'] = row['id']
+        raiddrop = RaidDropsModel.get_one(reqdata)
+        print("got raiddrop", raiddrop)
+        raiddrop.updateView(reqdata, False)
     return ('', 204)
 
 def custom_response(res, status_code):

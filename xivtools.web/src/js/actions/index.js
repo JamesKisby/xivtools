@@ -28,6 +28,13 @@ export function removeRaidTeam(team) {
   }
 };
 
+export function deleteRaidRows(rows) {
+  return {
+    type: ACTION_TYPES.DELETE_RAID_ROWS,
+    rows
+  }
+};
+
 export function getData() {
   return {
     type: ACTION_TYPES.DATA_REQUESTED
@@ -35,7 +42,6 @@ export function getData() {
 };
 
 export function getRaidData(raid) {
-  console.log("getraidata", raid);
   return {
     type: ACTION_TYPES.RAID_DATA_REQUESTED,
     raid
