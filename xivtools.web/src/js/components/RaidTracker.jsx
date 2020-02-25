@@ -57,13 +57,6 @@ const RaidTracker = ({ match, location }) => {
               {raidSelector.raidData.raidname}
             </Typography>
           </Grid>
-          {raidSelector.raidData.trackerpw ? (
-            <Grid item xs={12}>
-              <Typography component="h1" variant="h5" color="inherit" noWrap>
-                YOUR RAID ID: {raidSelector.raidData.trackerpw}
-              </Typography>
-            </Grid>
-          ) : null}
           <Grid container spacing={2}>
           {!raidSelector.raidData.players ? (
             <>
@@ -103,11 +96,9 @@ const RaidTracker = ({ match, location }) => {
               </Grid>
             ) : (
               <Grid item xs={12} md={6} lg={3}>
-                <Paper className={classes.paper}>
                   <Button variant="contained" color="primary" onClick={addRaid}>
                     Add Raid to Tracking
                   </Button>
-                </Paper>
               </Grid>
             )}
             </>
@@ -115,6 +106,13 @@ const RaidTracker = ({ match, location }) => {
             <div></div>
           )}
           </Grid>
+          {raidSelector.raidData.trackerpw ? (
+            <Grid item xs={12}>
+              <Typography component="h1" variant="h5" color="inherit" noWrap>
+                YOUR RAID ID: {raidSelector.raidData.trackerpw} (Don't share this)
+              </Typography>
+            </Grid>
+          ) : null}
           </>
         )}
         </>

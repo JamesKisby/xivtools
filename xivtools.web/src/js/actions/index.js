@@ -14,6 +14,13 @@ export function addRaidTeam(team) {
   }
 };
 
+export function updateRaidData(data) {
+  return {
+    type: ACTION_TYPES.UPDATE_RAID_DATA,
+    data
+  }
+};
+
 export function addExistingRaidTeam(team) {
   return {
     type: ACTION_TYPES.ADD_EXISTING_RAID_TEAM,

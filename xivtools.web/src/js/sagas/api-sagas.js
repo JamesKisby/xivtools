@@ -39,6 +39,15 @@ function deleteRaidRows(raid) {
   }).then(response => response.json());
 }
 
+function updateRaidData(raid) {
+  console.log("RAID", raid);
+  console.log("RAID string", JSON.stringify(raid));
+  return fetch(api + "/raid/tracker", {
+    method: 'post',
+    body: JSON.stringify(raid)
+  }).then(response => response.json());
+}
+
 function getUsersRaids(raid) {
   if(raid) {
     return fetch(api + "/whoami/" + String(raid))
@@ -79,6 +88,20 @@ function* LoadRaid(params) {
     }
   } catch(e) {
     yield put({type: actions.API_ERRORED, payload: e})
+  }
+}
+
+function* UpdateRaids(params) {
+  console.log("UpdateRaids", params);
+  try {
+    const payload = yield call(updateRaidData, params);
+    if(payload) {
+      yield put({type: actions.RAID_DATA_UPDATED, payload});
+    } else {
+      throw payload;
+    }
+  } catch(e) {
+    yield put({type: actions.RAID_UPDATE_ERRORED, payload: e})
   }
 }
 
@@ -189,6 +212,7 @@ export default function* root() {
     takeEvery(actions.LOGIN_LOCKED, loginComplete),
     takeEvery(actions.DRAWER, drawerOpen),
     takeEvery(actions.ITEM_SEARCH, ItemSearch),
-    takeEvery(actions.DELETE_RAID_ROWS, DeleteRows)
+    takeEvery(actions.DELETE_RAID_ROWS, DeleteRows),
+    takeEvery(actions.UPDATE_RAID_DATA, UpdateRaids)
   ])
 }

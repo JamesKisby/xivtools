@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteRaidRows } from "../actions/index";
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import ItemSearch from "./ItemSearch";
 import { lighten, makeStyles, withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -21,6 +22,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddBoxIcon from "@material-ui/icons/AddBox";
+import Popover from '@material-ui/core/Popover';
 
 
 const useStyles = makeStyles(theme => ({
@@ -187,11 +189,39 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
   const { pw, numSelected, playerName, handleDelete } = props;
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleAddItem = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const openPop = Boolean(anchorEl);
+  const id = openPop ? 'simple-popover' : undefined;
 
   return (
     <Toolbar
       className={clsx(classes.root, {[classes.highlight]: numSelected > 0,})}
     >
+      <Popover
+        id={id}
+        open={openPop}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        <ItemSearch raid={true} playerName={playerName} pw={pw} onClose={handleClose}/>
+      </Popover>
       {numSelected > 0 ? (
         <Typography className={classes.title} color="inherit" variant="subtitle1">
           {numSelected} selected
@@ -211,7 +241,7 @@ const EnhancedTableToolbar = props => {
           </Tooltip>
         ) : (
           <Tooltip title="Add Items manually">
-            <IconButton aria-label="Add Items Manually">
+            <IconButton aria-label="Add Items Manually" onClick={handleAddItem}>
               <AddBoxIcon />
             </IconButton>
           </Tooltip>

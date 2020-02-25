@@ -134,28 +134,38 @@ def get_raid():
 
 @raid_api.route('/tracker', methods=['POST'])
 def set_test():
-    req_data = request.get_json()
+    req_data = request.get_json(force=True)
     print("JSON",req_data)
-    if not 'Actor' in req_data[0]['XIVEvent']:
-        return custom_response({'error':'no drops'}, 400)
-    data = {}
-    data['name'] = req_data[0]['XIVEvent']['Actor']['Name']
-    if 'HomeWorld' in req_data[0]['XIVEvent']['Actor']:
-        data['world'] = req_data[0]['XIVEvent']['Actor']['HomeWorld']['Name']
-    if not 'IsReporter' in req_data[0]['XIVEvent']['Actor']:
-        data['isreporter'] = False
+    if 'data' in req_data:
+        data = {}
+        data['name'] = req_data['data']['playername']
+        data['itemid'] = req_data['data']['id']
+        data['itemquantity'] = req_data['data']['amount']
+        data['playerid'] = req_data['data']['trackerpw']
+        data['view'] = True
+        data['time'] = datetime.datetime.strptime(
+                    req_data['data']['date'].split(".")[0], "%Y-%m-%dT%H:%M:%S")
     else:
-        data['isreporter'] = req_data[0]['XIVEvent']['Actor']['IsReporter']
-    if 'ClassJob' in req_data[0]['XIVEvent']['Actor']:
-        data['classjob'] = req_data[0]['XIVEvent']['Actor']['ClassJob']['Abbreviation']
-    data['time'] = datetime.datetime.strptime(
+        if not 'Actor' in req_data[0]['XIVEvent']:
+            return custom_response({'error':'no drops'}, 400)
+        data = {}
+        data['name'] = req_data[0]['XIVEvent']['Actor']['Name']
+        if 'HomeWorld' in req_data[0]['XIVEvent']['Actor']:
+            data['world'] = req_data[0]['XIVEvent']['Actor']['HomeWorld']['Name']
+        if not 'IsReporter' in req_data[0]['XIVEvent']['Actor']:
+            data['isreporter'] = False
+        else:
+            data['isreporter'] = req_data[0]['XIVEvent']['Actor']['IsReporter']
+        if 'ClassJob' in req_data[0]['XIVEvent']['Actor']:
+            data['classjob'] = req_data[0]['XIVEvent']['Actor']['ClassJob']['Abbreviation']
+        data['time'] = datetime.datetime.strptime(
                     req_data[0]['ACTLogLineEvent']['DetectedTime'],
                     "%Y-%m-%dT%H:%M:%S")
-    data['logmessage'] = req_data[0]['LogMessage']
-    data['itemid'] = req_data[0]['XIVEvent']['Item']['Id']
-    data['itemquantity'] = req_data[0]['XIVEvent']['Item']['Quantity']
-    data['playerid'] = req_data[1]
-    data['view'] = True
+        data['logmessage'] = req_data[0]['LogMessage']
+        data['itemid'] = req_data[0]['XIVEvent']['Item']['Id']
+        data['itemquantity'] = req_data[0]['XIVEvent']['Item']['Quantity']
+        data['playerid'] = req_data[1]
+        data['view'] = True
 
     raiddrop = RaidDropsModel(data)
     raid = RaidDropsModel.get_one(data)
