@@ -173,7 +173,7 @@ def set_test():
         raid.update(data)
     else:
         raiddrop.save()
-    return ('', 204)
+    return ({'Raid_updated': True}, 200)
 
 @raid_api.route('/removeRows', methods=['POST'])
 def remove_rows():

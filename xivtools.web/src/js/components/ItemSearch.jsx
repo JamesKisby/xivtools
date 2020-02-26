@@ -4,7 +4,7 @@ import { useAsync } from "react-async";
 import AddRaidItem from "./AddRaidItem";
 import Grid from '@material-ui/core/Grid';
 import { useDispatch, useSelector } from "react-redux";
-import { searchItems, updateRaidData } from "../actions/index";
+import { searchItems, updateRaidData, getRaidData } from "../actions/index";
 import { makeStyles } from "@material-ui/core/styles";
 import { VariableSizeList as List} from 'react-window';
 import ListItem from '@material-ui/core/ListItem';
@@ -60,6 +60,7 @@ export default function ItemSearch(props) {
   const [count, setCount] = useState(1);
   const [selectedDate, handleDateChange] = useState(new Date("2020-01-01T00:00:00.000Z"));
   const itemSelector = useSelector(state => state.items.item);
+  const updateSelector = useSelector(state => state.raid.update);
 
   const handleSubmitSearch = (event) => {
     event.preventDefault();
@@ -78,6 +79,15 @@ export default function ItemSearch(props) {
     dispatch(updateRaidData(newItem));
     if (props.onClose) props.onClose();
   }
+
+  useEffect(() => {
+    if(item) {
+      const loc = location.pathname.split("/")[3];
+      const user = localStorage.getItem('user');
+      console.log("useeffect", loc, user);
+      dispatch(getRaidData({raidid: loc, user: user }));
+    }
+  },[updateSelector, item])
 
   const handleSearch = (event) => {
     setSearchValues({ [event.target.id]: event.target.value, page: 1 });
@@ -126,7 +136,7 @@ export default function ItemSearch(props) {
   return(
     <Grid container spacing={2}>
       <Grid item xs={12}>
-          {item ? (
+          {item !== null ? (
             <>
             <ListItem id={itemSelector[item].id}>
               <Badge
