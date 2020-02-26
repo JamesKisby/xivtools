@@ -51,9 +51,9 @@ const RaidTracker = ({ match, location }) => {
           </Grid>
           </Grid>
         ) : (
-          <>
+          <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Typography component="h1" variant="h5" color="inherit" noWrap>
+            <Typography component="h1" variant="h3" color="primary" noWrap>
               {raidSelector.raidData.raidname}
             </Typography>
           </Grid>
@@ -78,10 +78,18 @@ const RaidTracker = ({ match, location }) => {
                   playerName={el[0].playername}
                   el={el}
                   pw={raidSelector.raidData.trackerpw}
+                  add={false}
                 />
               ))}
             </>
           )}
+          <RaidTrackerInd
+            key="new"
+            playerName="Manually Add Character"
+            el={null}
+            pw={raidSelector.raidData.trackerpw}
+            add={true}
+          />
           </Grid>
           <Grid container spacing={2}>
           {authSelector.is_authenticated ? (
@@ -113,7 +121,7 @@ const RaidTracker = ({ match, location }) => {
               </Typography>
             </Grid>
           ) : null}
-          </>
+          </Grid>
         )}
         </>
   );

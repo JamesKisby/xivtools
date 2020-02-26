@@ -125,7 +125,7 @@ class RaidDropsModel(db.Model):
             db.func.array_agg(aggregate_order_by(RaidDropsModel.time, ItemModel.name)).label('time'),
             #db.func.array_agg(RaidDropsModel.itemid).label('idd'),
             #RaidDropsModel.itemquantity,
-            #RaidDropsModel.playerid,
+            db.func.array_agg(aggregate_order_by(ItemModel.rarity, ItemModel.name)).label('rarity'),
             db.func.array_agg(aggregate_order_by(ItemModel.name, ItemModel.name)).label('itemnames'),
             db.func.array_agg(aggregate_order_by(ItemModel.id, ItemModel.name)).label('ids'),
             db.func.array_agg(aggregate_order_by(RaidDropsModel.itemquantity, ItemModel.name)).label('itemquantities'),
@@ -171,3 +171,4 @@ class RaidDropsSchema(Schema):
     icons = fields.List(fields.Str(), required=True)
     ids = fields.List(fields.Int(), required=True)
     view = fields.Boolean(required=True)
+    rarity = fields.List(fields.Int(), required=True)

@@ -130,7 +130,8 @@ class ItemModel(db.Model):
             ItemModel.itemsearchcategory,
             ItemModel.equipslotcategory,
             ItemModel.equiprestriction,
-            ItemModel.classjobcategory
+            ItemModel.classjobcategory,
+            ItemModel.rarity
         ).filter(ItemModel.id == id).first()
 
     def getPage(page, text, filter=None):
@@ -139,7 +140,8 @@ class ItemModel(db.Model):
             ItemModel.name,
             ItemModel.levelitem,
             ItemModel.itemuicategory,
-            ItemModel.icon
+            ItemModel.icon,
+            ItemModel.rarity
         ).filter(
             db.func.lower(ItemModel.name).like("{}%".format(text)))
         print(q)

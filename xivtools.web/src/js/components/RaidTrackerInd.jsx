@@ -26,6 +26,21 @@ import Popover from '@material-ui/core/Popover';
 
 
 const useStyles = makeStyles(theme => ({
+  rarity1: {
+    color: 'white',
+  },
+  rarity2: {
+    color: '#B4EEB4',
+  },
+  rarity3: {
+    color: '#5B92FF',
+  },
+  rarity4: {
+    color: '#B38CFF'
+  },
+  rarity7: {
+    color: '#CFA3B4',
+  },
   paper: {
     width: '100%',
     marginBottom: theme.spacing(2),
@@ -94,8 +109,8 @@ const StyledTableRow = withStyles(theme => ({
   },
 }))(TableRow);
 
-function createData(id, icon, item, amount, date) {
-  return { id, icon, item, amount, date};
+function createData(id, icon, item, amount, date, rarity) {
+  return { id, icon, item, amount, date, rarity};
 }
 
 function descendingComparator(a, b, orderBy) {
@@ -188,7 +203,7 @@ EnhancedTableHead.propTypes = {
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const { pw, numSelected, playerName, handleDelete } = props;
+  const { pw, numSelected, playerName, handleDelete, add } = props;
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleAddItem = event => {
@@ -220,7 +235,9 @@ const EnhancedTableToolbar = props => {
           horizontal: 'right',
         }}
       >
-        <ItemSearch raid={true} playerName={playerName} pw={pw} onClose={handleClose}/>
+        <div>
+        <ItemSearch add={add} raid={true} playerName={playerName} pw={pw} onClose={handleClose}/>
+        </div>
       </Popover>
       {numSelected > 0 ? (
         <Typography className={classes.title} color="inherit" variant="subtitle1">
@@ -256,10 +273,11 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   playerName: PropTypes.string.isRequired,
   pw: PropTypes.string,
+  add: PropTypes.bool,
 };
 
 
-export default function RaidTracker({ playerName, el, pw }) {
+export default function RaidTracker({ playerName, el, pw, add }) {
   const classes = useStyles();
 
   const dispatch = useDispatch();
@@ -272,9 +290,11 @@ export default function RaidTracker({ playerName, el, pw }) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    setRows(el.map((i) => (
-      createData(i.ids, i.icons, i.itemnames, i.itemquantities, i.time)
-    )));
+    if(el) {
+      setRows(el.map((i) => (
+        createData(i.ids, i.icons, i.itemnames, i.itemquantities, i.time, i.rarity)
+      )));
+    }
   },[selector]);
 
   const handleRequestSort = (event, property) => {
@@ -334,6 +354,8 @@ export default function RaidTracker({ playerName, el, pw }) {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
+    <>
+    {el ? (
     <Grid item xs={12} md={6} lg={4}>
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
@@ -341,6 +363,7 @@ export default function RaidTracker({ playerName, el, pw }) {
           playerName={playerName}
           handleDelete={handleDelete}
           pw={pw}
+          add={add}
         />
         <TableContainer>
           <Table
@@ -375,6 +398,7 @@ export default function RaidTracker({ playerName, el, pw }) {
                       tabIndex={-1}
                       key={row.id}
                       selected={isItemSelected}
+                      style={{ height: 73 }}
                     >
                       {pw && (
                         <TableCell padding="checkbox">
@@ -387,17 +411,23 @@ export default function RaidTracker({ playerName, el, pw }) {
                       <TableCell component="th" id={labelId} scope="row" padding={pw ? "none" : "default"}>
                         <div className={classes.flex}>
                           <img className={classes.icon} src={row.icon} />
-                          {row.item}
+
+                          <p className={
+                            row.rarity == 1 ? classes.rarity1 : (
+                            row.rarity == 2 ? classes.rarity2 : (
+                            row.rarity == 3 ? classes.rarity3 : (
+                            row.rarity == 4 ? classes.rarity4 : (
+                            classes.rarity7))))}>{row.item}</p>
                         </div>
                       </TableCell>
-                      <TableCell align="right">{row.amount}</TableCell>
+                      <TableCell align="center">{row.amount}</TableCell>
                       <TableCell align="left">{row.date}</TableCell>
                     </TableRow>
                   );
                 })
               }
               {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
+                <TableRow style={{ height: 73 * emptyRows }}>
                   <TableCell colSpan={5} />
                 </TableRow>
               )}
@@ -415,5 +445,19 @@ export default function RaidTracker({ playerName, el, pw }) {
         />
       </Paper>
     </Grid>
+  ) : (
+    <Grid item xs={12} md={6} lg={4}>
+      <Paper className={classes.paper}>
+        <EnhancedTableToolbar
+          numSelected={0}
+          playerName={playerName}
+          handleDelete={handleDelete}
+          pw={pw}
+          add={add}
+        />
+      </Paper>
+    </Grid>
+  )}
+  </>
   );
 }

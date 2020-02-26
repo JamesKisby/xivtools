@@ -25,8 +25,6 @@ import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display: 'flex',
-    flexDirection: 'column',
     '& .MuiBadge-root': {
       marginRight: theme.spacing(4),
     },
@@ -39,23 +37,37 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
   },
   button: {
-    paddingTop: '5px',
+    margin: theme.spacing(2),
+    display: 'flex',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: 200,
+  },
+  buttonGroup: {
+    margin: theme.spacing(2),
   },
   form: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
+    '& .MuiTextField-root': {
+      margin: theme.spacing(2),
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      width: 300,
+      display: 'flex',
+    },
+  },
+  image: {
+    marginRight: '10px',
   },
 }));
 
 
 export default function ItemSearch(props) {
-  const { raid, pw, playerName } = props;
+  const { raid, pw, playerName, add } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const [item, setItem] = useState(null);
+  const [name, setName] = useState("");
+  const [addName, setAddName] = useState(add);
   const [searchValues, setSearchValues] = useState({search: "", page: 1});
   const [count, setCount] = useState(1);
   const [selectedDate, handleDateChange] = useState(new Date("2020-01-01T00:00:00.000Z"));
@@ -65,6 +77,10 @@ export default function ItemSearch(props) {
   const handleSubmitSearch = (event) => {
     event.preventDefault();
     setItem(null);
+    if(name === "") {
+      console.log("name === nul setting", playerName);
+      setName(playerName);
+    }
     dispatch(searchItems({searchValues}));
   }
 
@@ -73,11 +89,16 @@ export default function ItemSearch(props) {
     const newItem = itemSelector[item];
     newItem.amount = count;
     newItem.trackerpw = pw;
-    newItem.playername = playerName;
+    newItem.playername = name;
     newItem.date = selectedDate;
     newItem.manual = true;
     dispatch(updateRaidData(newItem));
     if (props.onClose) props.onClose();
+  }
+
+  const handleSubmitAddName = (event) => {
+    event.preventDefault();
+    setAddName(false);
   }
 
   useEffect(() => {
@@ -93,6 +114,10 @@ export default function ItemSearch(props) {
     setSearchValues({ [event.target.id]: event.target.value, page: 1 });
   }
 
+  const handleAddName = (event) => {
+    setName(event.target.value);
+  }
+
   const handleAdd = (event) => {
     setCount(event.target.value);
   }
@@ -106,7 +131,7 @@ export default function ItemSearch(props) {
   const getItemSize = index => rowSizes[index];
 
   const getChildSize = child => {
-    return  48;
+    return  75;
   }
 
 
@@ -134,11 +159,11 @@ export default function ItemSearch(props) {
   );
 
   return(
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
+    <Grid container spacing={0} direction="column">
           {item !== null ? (
             <>
-            <ListItem id={itemSelector[item].id}>
+            <Grid item xs={12}>
+            <ListItem className={classes.root} id={itemSelector[item].id}>
               <Badge
                 color="secondary"
                 badgeContent={count}
@@ -147,76 +172,119 @@ export default function ItemSearch(props) {
                   horizontal: 'left',
                 }}
               >
-                <img src={itemSelector[item].icon} />
+                <img className={classes.image} src={itemSelector[item].icon} />
               </Badge>
               <ListItemText primary={itemSelector[item].name}/>
               <p>iLv. {itemSelector[item].levelitem} - {itemSelector[item].itemuicategory}</p>
             </ListItem>
-
-            <div className={classes.root}>
-              <ButtonGroup>
-                <Button
-                  aria-label="reduce"
-                  onClick={() => {setCount(Math.max(count -1, 1));}}
-                >
-                  <RemoveIcon fontSize="small" />
-                </Button>
-                <Button
-                  aria-label="increase"
-                  onClick={() => {setCount(count + 1);}}
-                >
-                  <AddIcon fontSize="small" />
-                </Button>
-              </ButtonGroup>
+            </Grid>
+            <Grid item xs={12}>
               <form className={classes.form} onSubmit={handleSubmitAdd}>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <DateTimePicker
-                  autoOk
-                  inputVariant="outlined"
-                  label="Set Date and Time"
-                  value={selectedDate}
-                  onChange={handleDateChange}
-                />
-              </MuiPickersUtilsProvider>
+                <div>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <DateTimePicker
+                    autoOk
+                    inputVariant="outlined"
+                    label="Set Date and Time"
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                  />
+                </MuiPickersUtilsProvider>
+                </div>
+                <div>
                 <TextField
                   id="add"
-                  label="add field"
+                  label="Amount"
                   type="add"
                   variant="outlined"
                   onChange={handleAdd}
-                  value={count}/>
+                  value={count}
+                />
+                </div>
+                <div>
+                <ButtonGroup className={classes.buttonGroup}>
+                  <Button
+                    aria-label="reduce"
+                    onClick={() => {setCount(Math.max(count -1, 1));}}
+                  >
+                    <RemoveIcon fontSize="small" />
+                  </Button>
+                  <Button
+                    aria-label="increase"
+                    onClick={() => {setCount(count + 1);}}
+                  >
+                    <AddIcon fontSize="small" />
+                  </Button>
+                </ButtonGroup>
+                </div>
+                <div>
                 <Button className={classes.button}type="submit" variant="contained" color="primary">
                   Add Item
                 </Button>
+                </div>
               </form>
-            </div>
+            </Grid>
             </>
           ) : (
             <>
-            <form className={classes.form} onSubmit={handleSubmitSearch}>
-              <TextField
-                id="search"
-                label="Search field"
-                type="search"
-                variant="outlined"
-                onChange={handleSearch}
-                value={searchValues.search}/>
-              <Button className={classes.button}type="submit" variant="contained" color="primary">
-                Submit
-              </Button>
-            </form>
-            <List
-              height={300}
-              itemCount={itemCount}
-              width={400}
-              key={itemCount}
-              itemSize={index => getChildSize(itemSelector[index])}
-            >
-              {Row}
-            </List>
+            {addName ? (
+              <>
+              <Grid item xs={12}>
+                <Typography component="h1" variant="h6">
+                  Enter Player Name:
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <form className={classes.form} onSubmit={handleSubmitAddName}>
+                  <TextField
+                    id="name"
+                    label="name"
+                    type="name"
+                    variant="outlined"
+                    onChange={handleAddName}
+                    value={name}/>
+                  <Button className={classes.button}type="submit" variant="contained" color="primary">
+                    Submit
+                  </Button>
+                </form>
+              </Grid>
+              </>
+            ) : (
+              <>
+              <Grid item xs={12}>
+                <Typography component="h1" variant="h6">
+                  Search Items:
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+              <form className={classes.form} onSubmit={handleSubmitSearch}>
+                <TextField
+                  id="search"
+                  label="Search field"
+                  type="search"
+                  variant="outlined"
+                  onChange={handleSearch}
+                  value={searchValues.search}/>
+                <Button className={classes.button}type="submit" variant="contained" color="primary">
+                  Submit
+                </Button>
+              </form>
+              </Grid>
+              <Grid item xs={12}>
+              <List
+                height={300}
+                itemCount={itemCount}
+                width={400}
+                key={itemCount}
+                itemSize={index => getChildSize(itemSelector[index])}
+              >
+                {Row}
+              </List>
+              </Grid>
+              </>
+            )}
             </>
           )}
-      </Grid>
     </Grid>
   );
 }

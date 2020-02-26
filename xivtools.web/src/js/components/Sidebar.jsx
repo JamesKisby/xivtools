@@ -70,6 +70,12 @@ const useStyles = makeStyles(theme => ({
       width: theme.spacing(9),
     }
   },
+  icons: {
+    color: 'black',
+  },
+  typo: {
+    color: 'black',
+  },
 }));
 
 export default function Sidebar(props) {
@@ -128,17 +134,17 @@ export default function Sidebar(props) {
       >
         <div className={classes.toolbarIcon}>
           <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
+            <ChevronLeftIcon className={classes.icons} />
           </IconButton>
         </div>
         <Divider />
         <List>
           <ListItem button component={Link} to="/">
             <ListItemIcon>
-              <Home />
+              <Home className={classes.icons} />
             </ListItemIcon>
             <ListItemText>
-              <Typography component="h1" variant="h6" color="inherit" noWrap>
+              <Typography component="h1" variant="h6" className={classes.typo} noWrap>
                 Home
               </Typography>
             </ListItemText>
@@ -148,9 +154,13 @@ export default function Sidebar(props) {
         <List>
           <ListItem button onClick={handleSearchClick}>
             <ListItemIcon>
-              <Search />
+              <Search className={classes.icons} />
             </ListItemIcon>
-            <ListItemText primary="Search" />
+            <ListItemText>
+              <Typography component="h1" variant="h6" className={classes.typo} noWrap>
+                Search
+              </Typography>
+            </ListItemText>
           </ListItem>
           <Popover
             id={id}
@@ -173,26 +183,38 @@ export default function Sidebar(props) {
         <List>
           <ListItem button onClick={handleClick}>
             <ListItemIcon>
-              <ViewList />
+              <ViewList className={classes.icons}/>
             </ListItemIcon>
-            <ListItemText primary="Raid Tracker" />
-            {open ? <ExpandLess /> : <ExpandMore />}
+            <ListItemText>
+              <Typography component="h1" variant="h6" className={classes.typo} noWrap>
+                Raid Tracker
+              </Typography>
+            </ListItemText>
+            {open ? <ExpandLess className={classes.icons} /> : <ExpandMore className={classes.icons} />}
           </ListItem>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <List disablePadding>
               <ListItem style={{ paddingLeft: 36 }} button component={Link} to={`/raid_tracker/add_new_raid`}>
                 <ListItemIcon>
-                  <AddBoxOutlined />
+                  <AddBoxOutlined className={classes.icons} />
                 </ListItemIcon>
-                <ListItemText primary="Add New Raid" />
+                <ListItemText>
+                  <Typography component="h1" variant="h6" className={classes.typo} noWrap>
+                    Add New Raid
+                  </Typography>
+                </ListItemText>
               </ListItem>
               {"raidid" in selector && selector.raidid != null ? (
                 selector.raidid.map((el, ind) => (
                   <ListItem key={el} style={{ paddingLeft: 36 }} button component={Link} to={`/raid_tracker/team/${el}`}>
                     <ListItemIcon>
-                      <SupervisedUserCircleRoundedIcon />
+                      <SupervisedUserCircleRoundedIcon className={classes.icons} />
                     </ListItemIcon>
-                    <ListItemText primary={selector.raidname[ind]} />
+                    <ListItemText>
+                      <Typography component="h1" variant="h6" className={classes.typo} noWrap>
+                        {selector.raidname[ind]}
+                      </Typography>
+                    </ListItemText>
                   </ListItem>
                 ))) :
                 null
@@ -206,14 +228,14 @@ export default function Sidebar(props) {
             {authSelector.is_authenticated ? (
               <ListItem button onClick={handleLogout}>
                 <ListItemIcon>
-                  <FaceIcon />
+                  <FaceIcon className={classes.icons} />
                 </ListItemIcon>
                 <ListItemText primary="Sign Out" />
               </ListItem>
             ) : (
               <ListItem button component={Link} to="/login">
                 <ListItemIcon>
-                  <FaceIcon />
+                  <FaceIcon className={classes.icons} />
                 </ListItemIcon>
                 <ListItemText primary="Sign In" />
               </ListItem>

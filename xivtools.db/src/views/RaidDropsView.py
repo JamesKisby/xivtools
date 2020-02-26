@@ -116,7 +116,7 @@ def get_raid():
     names = [x['playername'] for x in ser_data]
     times = [x['time'] for x in ser_data]
     times = [*map(eval,times)]
-    print("ser_data", ser_data)
+    print("times", times[0][0].strftime('%Y/%m/%d %I:%M %p'))
     keys = ser_data[0].keys()
     a['players'] = []
     for i,data in enumerate(ser_data):
@@ -124,7 +124,7 @@ def get_raid():
         for j,c in enumerate(b):
             icons = c['icons'].split("/")
             c['playername'] = names[i]
-            c['time'] = str(times[i][j].date()) + "\n" + str(times[i][j].time())
+            c['time'] = times[i][j].strftime('%Y/%m/%d %I:%M %p')
             c['icons'] = '/assets/icons/' + icons[-2] + "/" + icons[-1].replace("tex","png")
 
         a['players'].append(b)
