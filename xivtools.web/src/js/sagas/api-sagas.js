@@ -74,6 +74,7 @@ function removeRaidTeam(raid) {
 }
 
 function searchItems(searchValues) {
+  console.log("searchValues", searchValues);
   return fetch(api + "/items/search" + "?text=" + String(searchValues.search) + "&page=" + String(searchValues.page))
     .then(response => response.json());
 }
@@ -172,7 +173,7 @@ function* RemoveTeamSaga(params) {
 
 function* ItemSearch(params) {
   try {
-    const payload = yield call(searchItems, params.search.searchValues);
+    const payload = yield call(searchItems, params);
     if(payload) {
       yield put({type: actions.ITEM_SEARCH_SUCCESS, payload});
     } else {

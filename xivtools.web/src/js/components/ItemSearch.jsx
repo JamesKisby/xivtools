@@ -67,26 +67,19 @@ export default function ItemSearch(props) {
   const dispatch = useDispatch();
   const [item, setItem] = useState(null);
   const [name, setName] = useState("");
+  const [searchValues, setSearchValues] = useState("");
+  const [search, setSearch] = useState("");
   const [addName, setAddName] = useState(add);
-  const [searchValues, setSearchValues] = useState({search: "", page: 1});
   const [count, setCount] = useState(1);
+  const [result, setResult] = useState([]);
   const [selectedDate, handleDateChange] = useState(new Date("2020-01-01T00:00:00.000Z"));
   const itemSelector = useSelector(state => state.items.item);
   const updateSelector = useSelector(state => state.raid.update);
 
-  const handleSubmitSearch = (event) => {
-    event.preventDefault();
-    setItem(null);
-    if(name === "") {
-      console.log("name === nul setting", playerName);
-      setName(playerName);
-    }
-    dispatch(searchItems({searchValues}));
-  }
 
   const handleSubmitAdd = (event) => {
     event.preventDefault();
-    const newItem = itemSelector[item];
+    const newItem = result[item];
     newItem.amount = count;
     newItem.trackerpw = pw;
     newItem.playername = name;
@@ -110,8 +103,45 @@ export default function ItemSearch(props) {
     }
   },[updateSelector, item])
 
+  useEffect(() => {
+    setResult(itemSelector);
+  },[itemSelector])
+
   const handleSearch = (event) => {
-    setSearchValues({ [event.target.id]: event.target.value, page: 1 });
+    if(name === "") {
+      console.log("name === nul setting", playerName);
+      setName(playerName);
+    }
+    setSearchValues(event.target.value);
+    if(event.target.value.length === 3) {
+      if(search !== event.target.value){
+        dispatch(searchItems(event.target.value));
+        setSearch(event.target.value);
+      }
+
+    }
+    if(event.target.value.length >= 3) {
+      if(searchValues.length < event.target.value.length){
+        if(itemSelector.length > 98) {
+          dispatch(searchItems(event.target.value));
+        }else {
+          let re = new RegExp('^' + event.target.value, 'i');
+          setResult(itemSelector.filter((str) =>{
+            return re.test(str.name);
+          }));
+        }
+      }
+      if(searchValues.length >= event.target.value.length){
+        //filter itemselector by value. if === then dispatch
+        let re = new RegExp('^' + event.target.value, 'i');
+        setResult(itemSelector.filter((str) =>{
+          return re.test(str.name);
+        }));
+        if(result.length === itemSelector.length) {
+          dispatch(searchItems(event.target.value));
+        }
+      }
+    }
   }
 
   const handleAddName = (event) => {
@@ -126,7 +156,7 @@ export default function ItemSearch(props) {
     setItem(index);
   }
 
-  const itemCount = itemSelector.length;
+  const itemCount = result.length;
 
   const getItemSize = index => rowSizes[index];
 
@@ -140,18 +170,18 @@ export default function ItemSearch(props) {
     <>
     {raid ? (
       <div className={index % 2 ? "ListItemOdd" : "ListItemEven"} style={style}>
-          <ListItem id={itemSelector[index].id} button onClick={event => addItem(event, index)}>
-              <img src={itemSelector[index].icon} />
-            <ListItemText primary={itemSelector[index].name}/>
-            <p>iLv. {itemSelector[index].levelitem} - {itemSelector[index].itemuicategory}</p>
+          <ListItem id={result[index].id} button onClick={event => addItem(event, index)}>
+              <img src={result[index].icon} />
+            <ListItemText primary={result[index].name}/>
+            <p>iLv. {result[index].levelitem} - {result[index].itemuicategory}</p>
           </ListItem>
       </div>
     ) : (
       <div className={index % 2 ? "ListItemOdd" : "ListItemEven"} style={style}>
-          <ListItem id={itemSelector[index].id} button component={Link} to={`/item/${itemSelector[index].id}`}>
-              <img src={itemSelector[index].icon} />
-            <ListItemText primary={itemSelector[index].name}/>
-            <p>iLv. {itemSelector[index].levelitem} - {itemSelector[index].itemuicategory}</p>
+          <ListItem id={result[index].id} button component={Link} to={`/item/${result[index].id}`}>
+              <img src={result[index].icon} />
+            <ListItemText primary={result[index].name}/>
+            <p>iLv. {result[index].levelitem} - {result[index].itemuicategory}</p>
           </ListItem>
       </div>
     )}
@@ -163,7 +193,7 @@ export default function ItemSearch(props) {
           {item !== null ? (
             <>
             <Grid item xs={12}>
-            <ListItem className={classes.root} id={itemSelector[item].id}>
+            <ListItem className={classes.root} id={result[item].id}>
               <Badge
                 color="secondary"
                 badgeContent={count}
@@ -172,10 +202,10 @@ export default function ItemSearch(props) {
                   horizontal: 'left',
                 }}
               >
-                <img className={classes.image} src={itemSelector[item].icon} />
+                <img className={classes.image} src={result[item].icon} />
               </Badge>
-              <ListItemText primary={itemSelector[item].name}/>
-              <p>iLv. {itemSelector[item].levelitem} - {itemSelector[item].itemuicategory}</p>
+              <ListItemText primary={result[item].name}/>
+              <p>iLv. {result[item].levelitem} - {result[item].itemuicategory}</p>
             </ListItem>
             </Grid>
             <Grid item xs={12}>
@@ -257,17 +287,14 @@ export default function ItemSearch(props) {
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-              <form className={classes.form} onSubmit={handleSubmitSearch}>
+              <form className={classes.form}>
                 <TextField
                   id="search"
                   label="Search field"
                   type="search"
                   variant="outlined"
                   onChange={handleSearch}
-                  value={searchValues.search}/>
-                <Button className={classes.button}type="submit" variant="contained" color="primary">
-                  Submit
-                </Button>
+                  value={searchValues}/>
               </form>
               </Grid>
               <Grid item xs={12}>
@@ -276,7 +303,7 @@ export default function ItemSearch(props) {
                 itemCount={itemCount}
                 width={400}
                 key={itemCount}
-                itemSize={index => getChildSize(itemSelector[index])}
+                itemSize={index => getChildSize(result[index])}
               >
                 {Row}
               </List>

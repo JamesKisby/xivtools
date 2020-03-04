@@ -94,7 +94,7 @@ const RaidTracker = ({ match, location }) => {
           <Grid container spacing={2}>
           {authSelector.is_authenticated ? (
             <>
-            {loc && raidSelector.userRaids.raidid.includes(loc) ? (
+            {raidSelector.userRaids.raidid && raidSelector.userRaids.raidid.includes(loc) ? (
               <Grid item xs={12} md={6} lg={3}>
                 <Paper className={classes.paper}>
                   <Button variant="contained" color="primary" onClick={deleteRaid}>
