@@ -7,6 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { searchItems, updateRaidData, getRaidData } from "../actions/index";
 import { makeStyles } from "@material-ui/core/styles";
 import { VariableSizeList as List} from 'react-window';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -62,7 +65,7 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function ItemSearch(props) {
-  const { raid, pw, playerName, add } = props;
+  const { raid, pw, playerName, add, job } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const [item, setItem] = useState(null);
@@ -72,10 +75,14 @@ export default function ItemSearch(props) {
   const [addName, setAddName] = useState(add);
   const [count, setCount] = useState(1);
   const [result, setResult] = useState([]);
+  const [newJob, setNewJob] = useState(job === null ? "PLD" : job);
   const [selectedDate, handleDateChange] = useState(new Date("2020-01-01T00:00:00.000Z"));
   const itemSelector = useSelector(state => state.items.item);
   const updateSelector = useSelector(state => state.raid.update);
 
+  const handleJobChange = (event) => {
+    setNewJob(event.target.value);
+  }
 
   const handleSubmitAdd = (event) => {
     event.preventDefault();
@@ -85,6 +92,7 @@ export default function ItemSearch(props) {
     newItem.playername = name;
     newItem.date = selectedDate;
     newItem.manual = true;
+    newItem.classjob = newJob;
     dispatch(updateRaidData(newItem));
     if (props.onClose) props.onClose();
   }
@@ -247,6 +255,29 @@ export default function ItemSearch(props) {
                   </Button>
                 </ButtonGroup>
                 </div>
+                <InputLabel>Select Job</InputLabel>
+                <Select
+                  value={newJob}
+                  onChange={handleJobChange}
+                >
+                  <MenuItem value={"PLD"}>PLD</MenuItem>
+                  <MenuItem value={"WAR"}>WAR</MenuItem>
+                  <MenuItem value={"DRK"}>DRK</MenuItem>
+                  <MenuItem value={"GNB"}>GNB</MenuItem>
+                  <MenuItem value={"WHM"}>WHM</MenuItem>
+                  <MenuItem value={"SCH"}>SCH</MenuItem>
+                  <MenuItem value={"AST"}>AST</MenuItem>
+                  <MenuItem value={"MNK"}>MNK</MenuItem>
+                  <MenuItem value={"DRG"}>DRG</MenuItem>
+                  <MenuItem value={"NIN"}>NIN</MenuItem>
+                  <MenuItem value={"SAM"}>SAM</MenuItem>
+                  <MenuItem value={"BRD"}>BRD</MenuItem>
+                  <MenuItem value={"MCH"}>MCH</MenuItem>
+                  <MenuItem value={"DNC"}>DNC</MenuItem>
+                  <MenuItem value={"BLM"}>BLM</MenuItem>
+                  <MenuItem value={"SMN"}>SMN</MenuItem>
+                  <MenuItem value={"RDM"}>RDM</MenuItem>
+                </Select>
                 <div>
                 <Button className={classes.button}type="submit" variant="contained" color="primary">
                   Add Item

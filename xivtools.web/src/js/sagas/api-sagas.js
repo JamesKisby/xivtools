@@ -59,7 +59,7 @@ function getUsersRaids(raid) {
 }
 
 function addRaidTeam(raid) {
-  return fetch(api + "/raid/add/" + String(raid.user) + "&name=" + String(raid.raidname))
+  return fetch(api + "/raid/add/" + String(raid.user) + "&name=" + String(raid.raidname) + "&type=" + String(raid.raidtype))
     .then(response => response.json());
 }
 

@@ -126,6 +126,7 @@ class ItemModel(db.Model):
             ItemModel.iscraftable,
             ItemModel.craftid,
             ItemModel.pricemid,
+            ItemModel.icon,
             ItemModel.itemuicategory,
             ItemModel.itemsearchcategory,
             ItemModel.equipslotcategory,

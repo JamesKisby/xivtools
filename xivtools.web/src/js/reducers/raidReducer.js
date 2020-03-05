@@ -6,6 +6,7 @@ const initialState = {
   userRaids: {
     raidid: [],
     raidname: [],
+    raidtype: [],
     user: null
   },
   update: []
@@ -27,6 +28,7 @@ function raidReducer(state = initialState, action) {
       userRaids: {
         raidid: state.userRaids.raidid.concat("1"),
         raidname: state.userRaids.raidname.concat("newraidname"),
+        raidtype: state.userRaids.raidtype.concat("52"),
         user: state.userRaids.user
       }
     });

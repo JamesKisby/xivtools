@@ -46,6 +46,7 @@ def add_raid():
     data['raidname'] = [request.values.get('name')]
     data['raidid'] = [hashid.encode(l)]
     user.update(data)
+    data['raidtype'] = request.values.get('type')
     data['trackerpw'] = [hashid.encode(pw)]
     data['isactive'] = True
     data['userid'] = user.userid
@@ -109,6 +110,10 @@ def get_raid():
         a['trackerpw'] = exists.trackerpw
     else:
         a['trackerpw'] = None
+    if exists.raidtype:
+        a['raidtype'] = exists.raidtype
+    else:
+        a['raidtype'] = "0"
     if not ser_data:
         a['players'] = None
         return custom_response(a, 200)
@@ -143,6 +148,7 @@ def set_test():
         data['itemquantity'] = req_data['data']['amount']
         data['playerid'] = req_data['data']['trackerpw']
         data['view'] = True
+        data['classjob'] = req_data['data']['classjob']
         data['time'] = datetime.datetime.strptime(
                     req_data['data']['date'].split(".")[0], "%Y-%m-%dT%H:%M:%S")
     else:

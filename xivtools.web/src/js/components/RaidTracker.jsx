@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getRaidData, removeRaidTeam, addExistingRaidTeam } from "../actions/index";
 import RaidTrackerInd from "./RaidTrackerInd";
+import EGTrackerInd from "./EGTrackerInd";
 import RaidInstructions from "./RaidInstructions";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -73,19 +74,34 @@ const RaidTracker = ({ match, location }) => {
           ) : (
             <>
               {raidSelector.raidData.players.map((el,ind) => (
-                <RaidTrackerInd
-                  key={ind}
-                  playerName={el[0].playername}
-                  el={el}
-                  pw={raidSelector.raidData.trackerpw}
-                  add={false}
-                />
+                <>
+                {raidSelector.raidData.raidtype === "52" ? (
+                  <EGTrackerInd
+                    key={ind}
+                    playerName={el[0].playername}
+                    job={el[0].job}
+                    el={el}
+                    pw={raidSelector.raidData.trackerpw}
+                    add={false}
+                  />
+                ) : (
+                  <RaidTrackerInd
+                    key={ind}
+                    playerName={el[0].playername}
+                    job={el[0].job}
+                    el={el}
+                    pw={raidSelector.raidData.trackerpw}
+                    add={false}
+                  />
+                )}
+                </>
               ))}
             </>
           )}
           <RaidTrackerInd
             key="new"
             playerName="Manually Add Character"
+            job={null}
             el={null}
             pw={raidSelector.raidData.trackerpw}
             add={true}

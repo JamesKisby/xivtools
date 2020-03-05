@@ -16,6 +16,7 @@ class RaidTrackerModel(db.Model):
     trackerpw = db.Column(db.Text)
     owner = db.Column(db.ARRAY(db.Text))
     isactive = db.Column(db.Boolean)
+    raidtype = db.Column(db.Text)
 
     def __init__(self, data):
         self.userid = data['userid']
@@ -24,6 +25,7 @@ class RaidTrackerModel(db.Model):
         self.trackerpw = data['trackerpw'][0]
         self.owner = data['owner']
         self.isactive = data['isactive']
+        self.raidtype = data['raidtype']
 
     def save(self):
         db.session.add(self)
@@ -59,7 +61,7 @@ class RaidTrackerSchema(Schema):
     trackerpw = fields.Str(required=True)
     owner = fields.List(fields.Str(), required=True)
     isactive = fields.Boolean(required=True)
-
+    raidtype = fields.Str(required=True)
 
 
 class RaidDropsModel(db.Model):
@@ -123,6 +125,7 @@ class RaidDropsModel(db.Model):
             RaidDropsModel.name.label('playername'),
             #RaidDropsModel.world.label('playerworld'),
             db.func.array_agg(aggregate_order_by(RaidDropsModel.time, ItemModel.name)).label('time'),
+            db.func.array_agg(aggregate_order_by(RaidDropsModel.classjob, ItemModel.name)).label('job'),
             #db.func.array_agg(RaidDropsModel.itemid).label('idd'),
             #RaidDropsModel.itemquantity,
             db.func.array_agg(aggregate_order_by(ItemModel.rarity, ItemModel.name)).label('rarity'),
@@ -169,6 +172,7 @@ class RaidDropsSchema(Schema):
     itemcategories = fields.List(fields.Str(), required=True)
     equipcategories = fields.List(fields.Str(), required=True)
     icons = fields.List(fields.Str(), required=True)
+    job = fields.List(fields.Str(), required=True)
     ids = fields.List(fields.Int(), required=True)
     view = fields.Boolean(required=True)
     rarity = fields.List(fields.Int(), required=True)
