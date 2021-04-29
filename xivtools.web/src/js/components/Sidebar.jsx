@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+    import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -81,6 +81,7 @@ const useStyles = makeStyles(theme => ({
 export default function Sidebar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(true);
+  const [openT, setOpenT] = useState(true);
   const openSelector = useSelector(state => state.form.open);
   const theme = useTheme();
   const classes = useStyles();
@@ -121,6 +122,9 @@ export default function Sidebar(props) {
   }, [user, formSelector, authSelector.login_complete]);
   const handleClick = () => {
     setOpen(!open);
+  };
+  const handleClickT = () => {
+    setOpenT(!openT);
   };
 
 
@@ -219,6 +223,37 @@ export default function Sidebar(props) {
                 ))) :
                 null
               }
+            </List>
+          </Collapse>
+        </List>
+        <Divider />
+        <List>
+          <ListItem button onClick={handleClickT}>
+            <ListItemIcon>
+              <ViewList className={classes.icons}/>
+            </ListItemIcon>
+            <ListItemText>
+              <Typography component="h1" variant="h6" className={classes.typo} noWrap>
+                Training
+              </Typography>
+            </ListItemText>
+            {openT ? <ExpandLess className={classes.icons} /> : <ExpandMore className={classes.icons} />}
+          </ListItem>
+          <Collapse in={openT} timeout="auto" unmountOnExit>
+            <List disablePadding>
+              <ListItem style={{ paddingLeft: 36 }} button component={Link} to={`/training/ucob/quickmarch`}>
+                    <ListItemIcon>
+                      <SupervisedUserCircleRoundedIcon className={classes.icons} />
+                    </ListItemIcon>
+                    <ListItemText>
+                      <Typography component="h1" variant="h6" className={classes.typo} noWrap>
+                        UCOB
+                      </Typography>
+                      <Typography component="h1" variant="h6" className={classes.typo} noWrap>
+                        Quickmarch
+                      </Typography>
+                    </ListItemText>
+                  </ListItem>
             </List>
           </Collapse>
         </List>

@@ -9,6 +9,7 @@ import Navbar from "./js/components/Navbar";
 import RaidTracker from "./js/components/RaidTracker";
 import NewRaidTeam from "./js/components/NewRaidTeam";
 import Login from "./js/components/Login";
+import Canvas from "./js/components/Canvas";
 import ItemSearch from "./js/components/ItemSearch";
 import LoginCallback from "./js/components/LoginCallback";
 import { makeStyles, MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
@@ -71,6 +72,7 @@ function Index() {
               <Route exact path="/" component={App} />
               <Route path="/raid_tracker/team/:userid" component={RaidTracker} />
               <Route exact path="/raid_tracker/add_new_raid" component={NewRaidTeam} />
+              <Route exact path="/training/:raidname/:mechanic" component={Canvas} />
               <Route exact path="/search" component={ItemSearch} />
               <Route path="/login" component={Login} />
             </Container>
