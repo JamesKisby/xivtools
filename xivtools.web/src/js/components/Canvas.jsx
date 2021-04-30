@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 
 
 export default function Canvas({ match }) {
-  const url = "https://xivtools.com/resources/" + match.params.raidname + "/" + match.params.mechanic + "/index.html";
+  const url = "https://xivtools.com/training/" + match.params.raidname + "/" + match.params.mechanic + "/index.html";
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -20,7 +20,6 @@ export default function Canvas({ match }) {
 
   return (
     <div>
-      <iframe src={url} width="480" height="480" ></iframe>
     </div>
   );
 }
