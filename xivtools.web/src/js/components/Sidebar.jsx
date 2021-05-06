@@ -242,18 +242,31 @@ export default function Sidebar(props) {
           <Collapse in={openT} timeout="auto" unmountOnExit>
             <List disablePadding>
               <ListItem style={{ paddingLeft: 36 }} button component={Link} to={`/training/ucob/quickmarch`}>
-                    <ListItemIcon>
-                      <SupervisedUserCircleRoundedIcon className={classes.icons} />
-                    </ListItemIcon>
-                    <ListItemText>
-                      <Typography component="h1" variant="h6" className={classes.typo} noWrap>
-                        UCOB
-                      </Typography>
-                      <Typography component="h1" variant="h6" className={classes.typo} noWrap>
-                        Quickmarch
-                      </Typography>
-                    </ListItemText>
-                  </ListItem>
+                <ListItemIcon>
+                    <SupervisedUserCircleRoundedIcon className={classes.icons} />
+                </ListItemIcon>
+                <ListItemText>
+                  <Typography component="h1" variant="h6" className={classes.typo} noWrap>
+                    UCOB
+                  </Typography>
+                  <Typography component="h1" variant="h6" className={classes.typo} noWrap>
+                    Quickmarch
+                  </Typography>
+                </ListItemText>
+              </ListItem>
+              <ListItem style={{ paddingLeft: 36 }} button component={Link} to={`/training/ucob/heavensfall`}>
+                <ListItemIcon>
+                    <SupervisedUserCircleRoundedIcon className={classes.icons} />
+                </ListItemIcon>
+                <ListItemText>
+                  <Typography component="h1" variant="h6" className={classes.typo} noWrap>
+                    UCOB
+                  </Typography>
+                  <Typography component="h1" variant="h6" className={classes.typo} noWrap>
+                    Heavensfall
+                  </Typography>
+                </ListItemText>
+              </ListItem>
             </List>
           </Collapse>
         </List>

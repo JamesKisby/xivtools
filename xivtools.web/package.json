@@ -53,6 +53,7 @@
     "react-dom": "^16.14.0",
     "react-markdown": "^4.3.1",
     "react-split-pane": "^0.1.92",
+    "react-unity-webgl": "^8.3.8",
     "react-window": "^1.8.6"
   }
 }
