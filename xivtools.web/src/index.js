@@ -72,7 +72,7 @@ function Index() {
               <Route exact path="/" component={App} />
               <Route path="/raid_tracker/team/:userid" component={RaidTracker} />
               <Route exact path="/raid_tracker/add_new_raid" component={NewRaidTeam} />
-              <Route exact path="/training/:raidname/:mechanic" component={Canvas} />
+              <Route exact path="/games/:raidname/:mechanic" component={Canvas} />
               <Route exact path="/search" component={ItemSearch} />
               <Route path="/login" component={Login} />
             </Container>

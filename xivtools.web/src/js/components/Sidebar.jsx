@@ -241,7 +241,7 @@ export default function Sidebar(props) {
           </ListItem>
           <Collapse in={openT} timeout="auto" unmountOnExit>
             <List disablePadding>
-              <ListItem style={{ paddingLeft: 36 }} button component={Link} to={`/training/ucob/quickmarch`}>
+              <ListItem style={{ paddingLeft: 36 }} button component={Link} to={`/games/ucob/quickmarch`}>
                 <ListItemIcon>
                     <SupervisedUserCircleRoundedIcon className={classes.icons} />
                 </ListItemIcon>
@@ -254,7 +254,7 @@ export default function Sidebar(props) {
                   </Typography>
                 </ListItemText>
               </ListItem>
-              <ListItem style={{ paddingLeft: 36 }} button component={Link} to={`/training/ucob/heavensfall`}>
+              <ListItem style={{ paddingLeft: 36 }} button component={Link} to={`/games/ucob/heavensfall`}>
                 <ListItemIcon>
                     <SupervisedUserCircleRoundedIcon className={classes.icons} />
                 </ListItemIcon>
