@@ -20,9 +20,9 @@ const useStyles = makeStyles(theme => ({
 
 const unityContext = new UnityContext({
   loaderUrl: "https://xivtools.com/training/ucob/heavensfall/Builds.loader.js",
-  dataUrl: "https://xivtools.com/training/ucob/heavensfall/Builds.data",
-  frameworkUrl: "https://xivtools.com/training/ucob/heavensfall/Builds.framework.js",
-  codeUrl: "https://xivtools.com/training/ucob/heavensfall/Builds.wasm",
+  dataUrl: "https://xivtools.com/training/ucob/heavensfall/Builds.data.gz",
+  frameworkUrl: "https://xivtools.com/training/ucob/heavensfall/Builds.framework.js.gz",
+  codeUrl: "https://xivtools.com/training/ucob/heavensfall/Builds.wasm.gz",
 });
 
 export default function Canvas({ match }) {
