@@ -3,6 +3,7 @@ from ..shared.Authentication import Auth
 from ..models.RaidDropsModel import RaidDropsModel, RaidDropsSchema
 from ..models.UserDataModel import UserDataModel, UserDataSchema
 from ..models.RaidDropsModel import RaidTrackerModel, RaidTrackerSchema
+from ..models.RaidCalendarModel import RaidCalendarModel, RaidCalendarSchema
 import datetime
 from hashids import Hashids
 from random import random
@@ -10,6 +11,7 @@ from random import random
 raid_api = Blueprint('raid',__name__)
 raid_schema = RaidDropsSchema()
 user_schema = UserDataSchema()
+calendar_schema = RaidCalendarSchema()
 
 @raid_api.route('/', methods=['POST'])
 def create():
@@ -200,6 +202,46 @@ def remove_rows():
         print("got raiddrop", raiddrop)
         raiddrop.updateView(reqdata, False)
     return ('', 204)
+
+@raid_api.route('/schedule', methods=['GET'])
+def get_schedule():
+    if not request.values.get('raidid'):
+        return ('no raid id', 400)
+
+    today = datetime.datetime.today().isoweekday()
+    now = datetime.datetime.now().time()
+    first = None
+    last = None
+    data = RaidCalendarModel.get_schedule(request.values.get('raidid'))
+    response = {}
+    for d in data:
+        print("looking at", d.day)
+        if today - d.day > 0:
+            days = 7 - (today - d.day)
+        else:
+            days = -(today - d.day)
+
+        date = datetime.date.today() + datetime.timedelta(days=days)
+
+        d.dtime = datetime.datetime.combine(date, d.starttime)
+
+        if first != None:
+            print("date difference"," --- ",d.dtime," --- ", first.dtime," --- ", d.dtime < first.dtime)
+
+
+        if first == None or d.dtime < first.dtime:
+            if date == datetime.datetime.today().date() and d.starttime < datetime.datetime.today().time():
+                if d.endtime < datetime.datetime.today().time():
+                    continue
+            first = d
+
+
+    response['starttime'] = first.starttime.__str__()
+    response['endtime'] = first.endtime.__str__()
+    response['day'] = first.day
+
+    return custom_response(response, 200)
+
 
 def custom_response(res, status_code):
     return Response(
