@@ -305,7 +305,6 @@ def retreive_schedule():
         else:
             guildid = ""
         for d in data:
-            print("GET THIS MANY", d.day)
             t = {}
             t['day'] = calendar.day_name[d.day]
             t['start'] = d.starttime.__str__()
@@ -346,13 +345,12 @@ def get_schedule():
         return custom_response({'No Voice': True}, 204)
 
     print("GOT HERE")
-    today = datetime.datetime.today().isoweekday()
+    today = datetime.datetime.today().weekday()
     now = datetime.datetime.now().time()
     first = None
     last = None
     data = RaidCalendarModel.get_schedule_by_guildid(request.values.get('guildid'))
     response = {}
-
     if not data:
         return custom_response({'No Raids Added': True}, 204)
 
@@ -367,7 +365,11 @@ def get_schedule():
 
         d.dtime = datetime.datetime.combine(date, d.starttime)
 
-        if first == None or d.dtime < first.dtime:
+        if first is None:
+            first = d
+            continue
+
+        if d.dtime < first.dtime:
             if date == datetime.datetime.today().date() and d.starttime < datetime.datetime.today().time():
                 if d.endtime <= datetime.datetime.today().time():
                     continue
