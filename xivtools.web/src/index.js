@@ -7,6 +7,7 @@ import App from "./js/components/App";
 import Sidebar from "./js/components/Sidebar";
 import Navbar from "./js/components/Navbar";
 import RaidTracker from "./js/components/RaidTracker";
+import RaidSchedule from "./js/components/RaidSchedule";
 import NewRaidTeam from "./js/components/NewRaidTeam";
 import Login from "./js/components/Login";
 import Canvas from "./js/components/Canvas";
@@ -21,15 +22,15 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       light: '#62727b',
-      main: '#37474f',
-      dark: '#102027',
+      main: '#32A6D8',
+      dark: '#303f9f',
       contrastText: '#fff',
     },
     secondary: {
       light: '#ffff6b',
-      main: '#fdd835',
-      dark: '#c6a700',
-      contrastText: '#000',
+      main: '#f50057',
+      dark: '#c51162',
+      contrastText: '#fff',
     },
     type: 'dark',
   },
@@ -71,6 +72,7 @@ function Index() {
 
               <Route exact path="/" component={App} />
               <Route path="/raid_tracker/team/:userid" component={RaidTracker} />
+              <Route path="/raid_tracker/schedule/:userid" component={RaidSchedule} />
               <Route exact path="/raid_tracker/add_new_raid" component={NewRaidTeam} />
               <Route exact path="/games/:raidname/:mechanic" component={Canvas} />
               <Route exact path="/search" component={ItemSearch} />

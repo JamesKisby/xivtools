@@ -32,8 +32,21 @@ function getRaidData(raid) {
     .then(response => response.json());
 }
 
+function getRaidCalendar(raid) {
+  if(!raid.user) raid.user = "?/code=";
+  return fetch(api + "/raid/getSchedule" + String(raid.user) + "&raidid=" + String(raid.raidid))
+    .then(response => response.json());
+}
+
 function deleteRaidRows(raid) {
   return fetch(api + "/raid/removeRows", {
+    method: 'post',
+    body: JSON.stringify(raid)
+  }).then(response => response.json());
+}
+
+function deleteRaidCalendarRows(raid) {
+  return fetch(api + "/raid/removeCalendarRows", {
     method: 'post',
     body: JSON.stringify(raid)
   }).then(response => response.json());
@@ -43,6 +56,15 @@ function updateRaidData(raid) {
   console.log("RAID", raid);
   console.log("RAID string", JSON.stringify(raid));
   return fetch(api + "/raid/tracker", {
+    method: 'post',
+    body: JSON.stringify(raid)
+  }).then(response => response.json());
+}
+
+function updateRaidSchedule(raid) {
+  console.log("RAID", raid);
+  console.log("RAID string", JSON.stringify(raid));
+  return fetch(api + "/raid/addToSchedule", {
     method: 'post',
     body: JSON.stringify(raid)
   }).then(response => response.json());
@@ -92,10 +114,35 @@ function* LoadRaid(params) {
   }
 }
 
+function* LoadCalendar(params) {
+  try {
+    const payload = yield call(getRaidCalendar, params.raid);
+    if(payload) {
+      yield put({type: actions.RAID_CALENDAR_LOADED, payload});
+    } else {
+      throw payload;
+    }
+  } catch(e) {
+    yield put({type: actions.API_ERRORED, payload: e})
+  }
+}
+
 function* UpdateRaids(params) {
-  console.log("UpdateRaids", params);
   try {
     const payload = yield call(updateRaidData, params);
+    if(payload) {
+      yield put({type: actions.RAID_DATA_UPDATED, payload});
+    } else {
+      throw payload;
+    }
+  } catch(e) {
+    yield put({type: actions.RAID_UPDATE_ERRORED, payload: e})
+  }
+}
+
+function* UpdateSchedule(params) {
+  try {
+    const payload = yield call(updateRaidSchedule, params);
     if(payload) {
       yield put({type: actions.RAID_DATA_UPDATED, payload});
     } else {
@@ -116,6 +163,19 @@ function* DeleteRows(params) {
     }
   } catch(e) {
     yield put({type: actions.RAID_ROWS_DELETED_ERROR, payload: e})
+  }
+}
+
+function* DeleteCalendarRows(params) {
+  try {
+    const payload = yield call(deleteRaidCalendarRows, params);
+    if(payload) {
+      yield put({type: actions.RAID_DATA_UPDATED, payload});
+    } else {
+      throw payload;
+    }
+  } catch(e) {
+    yield put({type: actions.CALENDAR_ROWS_DELETED_ERROR, payload: e})
   }
 }
 
@@ -214,6 +274,9 @@ export default function* root() {
     takeEvery(actions.DRAWER, drawerOpen),
     takeEvery(actions.ITEM_SEARCH, ItemSearch),
     takeEvery(actions.DELETE_RAID_ROWS, DeleteRows),
-    takeEvery(actions.UPDATE_RAID_DATA, UpdateRaids)
+    takeEvery(actions.DELETE_CALENDAR_ROWS, DeleteCalendarRows),
+    takeEvery(actions.UPDATE_RAID_DATA, UpdateRaids),
+    takeEvery(actions.UPDATE_RAID_SCHEDULE, UpdateSchedule),
+    takeEvery(actions.RAID_CALENDAR_REQUESTED, LoadCalendar)
   ])
 }

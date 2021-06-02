@@ -21,6 +21,13 @@ export function updateRaidData(data) {
   }
 };
 
+export function updateRaidSchedule(data) {
+  return {
+    type: ACTION_TYPES.UPDATE_RAID_SCHEDULE,
+    data
+  }
+};
+
 export function addExistingRaidTeam(team) {
   return {
     type: ACTION_TYPES.ADD_EXISTING_RAID_TEAM,
@@ -42,6 +49,13 @@ export function deleteRaidRows(rows) {
   }
 };
 
+export function deleteCalendarRows(rows) {
+  return {
+    type: ACTION_TYPES.DELETE_CALENDAR_ROWS,
+    rows
+  }
+};
+
 export function getData() {
   return {
     type: ACTION_TYPES.DATA_REQUESTED
@@ -51,6 +65,13 @@ export function getData() {
 export function getRaidData(raid) {
   return {
     type: ACTION_TYPES.RAID_DATA_REQUESTED,
+    raid
+  }
+}
+
+export function getRaidCalendar(raid) {
+  return {
+    type: ACTION_TYPES.RAID_CALENDAR_REQUESTED,
     raid
   }
 }

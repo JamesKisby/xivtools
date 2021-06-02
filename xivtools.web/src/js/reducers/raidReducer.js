@@ -3,6 +3,12 @@ import * as ACTION_TYPES from "../constants/action-type";
 
 const initialState = {
   raidData: [],
+  raidCalendar: {
+    schedule: [],
+    raidname: null,
+    user: null,
+    guildid: null,
+  },
   userRaids: {
     raidid: [],
     raidname: [],
@@ -16,6 +22,11 @@ function raidReducer(state = initialState, action) {
   if(action.type == ACTION_TYPES.RAID_DATA_LOADED) {
     return Object.assign({}, state, {
       raidData: action.payload
+    });
+  }
+  if(action.type == ACTION_TYPES.RAID_CALENDAR_LOADED) {
+    return Object.assign({}, state, {
+      raidCalendar: action.payload
     });
   }
   if(action.type == ACTION_TYPES.USER_RAID_DATA_LOADED) {
@@ -34,6 +45,8 @@ function raidReducer(state = initialState, action) {
     });
   }
   if(action.type == ACTION_TYPES.RAID_DATA_UPDATED) {
+    console.log("UPDATE");
+    console.log(action.payload);  
     return Object.assign({}, state, {
       update: state.update.concat(0)
     });

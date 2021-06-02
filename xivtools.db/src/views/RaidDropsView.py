@@ -4,14 +4,21 @@ from ..models.RaidDropsModel import RaidDropsModel, RaidDropsSchema
 from ..models.UserDataModel import UserDataModel, UserDataSchema
 from ..models.RaidDropsModel import RaidTrackerModel, RaidTrackerSchema
 from ..models.RaidCalendarModel import RaidCalendarModel, RaidCalendarSchema
+from ..models.DiscordGuildModel import DiscordGuildModel, DiscordGuildSchema
 import datetime
+import time
 from hashids import Hashids
 from random import random
+import calendar
+
+weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+calendar.setfirstweekday(calendar.SUNDAY)
 
 raid_api = Blueprint('raid',__name__)
 raid_schema = RaidDropsSchema()
 user_schema = UserDataSchema()
 calendar_schema = RaidCalendarSchema()
+guild_schema = DiscordGuildSchema()
 
 @raid_api.route('/', methods=['POST'])
 def create():
@@ -107,7 +114,7 @@ def get_raid():
     ser_data = raid_schema.dump(raid, many=True)
     user = UserDataModel.get_by_token(request.values.get('code'))
     a = {'raidfound': 1}
-    a['raidname'] = exists.raidname.lstrip("{").rstrip("}")
+    a['raidname'] = exists.raidname.lstrip("{").rstrip("}").strip('""')
     if user and user.userid == exists.userid:
         a['trackerpw'] = exists.trackerpw
     else:
@@ -186,7 +193,6 @@ def set_test():
 @raid_api.route('/removeRows', methods=['POST'])
 def remove_rows():
     data = request.get_json(force=True)['rows']
-    print("DATA",data)
     rows = data['rows']
     userid = data['data']['user'].split("=")[1].split("&")[0]
     user = UserDataModel.get_by_token(userid)
@@ -203,17 +209,153 @@ def remove_rows():
         raiddrop.updateView(reqdata, False)
     return ('', 204)
 
+
+@raid_api.route('/addToSchedule', methods=['POST'])
+def add_schedule():
+    req_data = request.get_json(force=True)['data']
+    print(req_data)
+    data = {}
+    userid = req_data['user'].split("=")[1].split("&")[0]
+    user = UserDataModel.get_by_token(userid)
+    data['userid'] = user.userid
+    data['raidid'] = req_data['raidid']
+    data['guildid'] = req_data['guildid']
+    #data['owner'] = req_data['owner']
+    data['owner'] = ""
+    data['day'] = (time.strptime(req_data['day'], "%A").tm_wday)
+    data['starttime'] = req_data['start']
+    print(req_data['start'])
+    data['endtime'] = req_data['end']
+    #data['isstandard'] = req_data['isstandard']
+    data['isstandard'] = True
+
+    raidCalendar = RaidCalendarModel(data)
+    raidCalendar.save()
+    return custom_response({'Added': True}, 200)
+
+@raid_api.route('/removeCalendarRows', methods=['POST'])
+def remove_calendar_rows():
+    req_data = request.get_json(force=True)
+    print("GOT DATA", req_data)
+    rows = req_data['rows']['rows']
+    print("GOT DATA", rows)
+
+    userid = req_data['rows']['data']['user'].split("=")[1].split("&")[0]
+    user = UserDataModel.get_by_token(userid)
+    if not user:
+        return ('no user', 404)
+
+    data = {}
+    data['raidid'] = req_data['rows']['data']['raidid']
+
+    for row in rows:
+        data['day'] = row['day']
+        data['starttime'] = row['start']
+        data['endtime'] = row['end']
+        scheduledrop = RaidCalendarModel.get_one(data)
+    #   ADD CHECK FOR OWNER BEFORE DELETING
+    #    if not data['owner'] in scheduledrop['owner']:
+    #        return ('No permission to delete', 400)
+        scheduledrop.delete()
+    #return ('deleted', 200)
+    return custom_response({'deleted': True}, 200)
+
+
+@raid_api.route('/updateSchedule', methods=['POST'])
+def update_schedule():
+    data = request.get_json(force=True)
+
+    raidid = data['raidid']
+    if not raidid:
+        return ('no RaidId', 404)
+
+    guild = DiscordGuildModel.get_voice_channel(data['guildid'])
+    print("Guild ID",data['guildid'])
+    if guild is not None:
+        print("Got guild", guild.guildid)
+        print("setting voice", data['voicechannel'])
+        guild.update({'voicechannel': data['voicechannel']})
+    else:
+        guild = DiscordGuildModel(data)
+        guild.save()
+
+    schedule = RaidCalendarModel.get_schedule(raidid)
+
+    if not schedule:
+        return ('No raid Found', 404)
+
+    for s in schedule:
+        s.update_schedule(data)
+
+    return ('Calendar created Successfully.', 200)
+
+
+@raid_api.route('/getSchedule', methods=['GET'])
+def retreive_schedule():
+    if not request.values.get('guildid'):
+        if not request.values.get('raidid'):
+            return custom_response({'No guild or raid ID': True}, 400)
+
+        raid = RaidTrackerModel.get_tracker(request.values.get('raidid'))
+        res = []
+        raidname = raid.raidname.lstrip("{").rstrip("}").strip('""')
+        data = RaidCalendarModel.get_schedule(request.values.get('raidid'))
+        if len(data) > 0:
+            guildid = data[0].guildid
+        else:
+            guildid = ""
+        for d in data:
+            print("GET THIS MANY", d.day)
+            t = {}
+            t['day'] = calendar.day_name[d.day]
+            t['start'] = d.starttime.__str__()
+            t['end'] = d.endtime.__str__()
+            t['id'] = d.id
+            res.append(t)
+        res.sort(key=lambda item: weekdays.index(item['day']))
+
+        return custom_response({'guildid': guildid, 'raidname': raidname, 'schedule': res}, 200)
+
+    res = []
+    data = RaidCalendarModel.get_schedule_by_guildid(request.values.get('guildid'))
+    if(len(data) > 0):
+        raidid = data[0].raidid
+    else:
+        raidid = ""
+    for d in data:
+        t = {}
+        t['day'] = calendar.day_name[d.day]
+        t['start'] = d.starttime.__str__()
+        t['end'] = d.endtime.__str__()
+        t['id'] = d.id
+        res.append(t)
+    res.sort(key=lambda item: weekdays.index(item['day']))
+
+    return custom_response({'raidid': raidid, 'schedule': res}, 200)
+
+
+
 @raid_api.route('/schedule', methods=['GET'])
 def get_schedule():
-    if not request.values.get('raidid'):
-        return ('no raid id', 400)
+    if not request.values.get('guildid'):
+        return custom_response({'No guild ID': True}, 400)
 
+    voicechannel = DiscordGuildModel.get_voice_channel(request.values.get('guildid'))
+    #print("Voice channel", voicechannel.voicechannel)
+    if not voicechannel:
+        return custom_response({'No Voice': True}, 204)
+
+    print("GOT HERE")
     today = datetime.datetime.today().isoweekday()
     now = datetime.datetime.now().time()
     first = None
     last = None
-    data = RaidCalendarModel.get_schedule(request.values.get('raidid'))
+    data = RaidCalendarModel.get_schedule_by_guildid(request.values.get('guildid'))
     response = {}
+
+    if not data:
+        return custom_response({'No Raids Added': True}, 204)
+
     for d in data:
         print("looking at", d.day)
         if today - d.day > 0:
@@ -225,13 +367,9 @@ def get_schedule():
 
         d.dtime = datetime.datetime.combine(date, d.starttime)
 
-        if first != None:
-            print("date difference"," --- ",d.dtime," --- ", first.dtime," --- ", d.dtime < first.dtime)
-
-
         if first == None or d.dtime < first.dtime:
             if date == datetime.datetime.today().date() and d.starttime < datetime.datetime.today().time():
-                if d.endtime < datetime.datetime.today().time():
+                if d.endtime <= datetime.datetime.today().time():
                     continue
             first = d
 
@@ -239,6 +377,7 @@ def get_schedule():
     response['starttime'] = first.starttime.__str__()
     response['endtime'] = first.endtime.__str__()
     response['day'] = first.day
+    response['voicechannel'] = voicechannel.voicechannel
 
     return custom_response(response, 200)
 

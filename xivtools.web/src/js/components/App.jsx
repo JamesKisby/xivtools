@@ -28,13 +28,6 @@ function App() {
     <Grid container spacing={2}>
     <Grid item xs={12}>
       <Paper className={classes.paper}>
-        <Typography component="h1" variant="h3" color="inherit">
-          HOME
-        </Typography>
-      </Paper>
-    </Grid>
-    <Grid item xs={12}>
-      <Paper className={classes.paper}>
         <Typography component="h1" variant="h4" color="inherit">
           Welcome to XIVTOOLS
         </Typography>

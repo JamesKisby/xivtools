@@ -13,7 +13,7 @@ class RaidCalendarModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     userid = db.Column(db.Text)
     raidid = db.Column(db.Text)
-    calendarid = db.Column(db.Text)
+    guildid = db.Column(db.Text)
     owner = db.Column(db.ARRAY(db.Text))
     day = db.Column(db.SMALLINT)
     starttime = db.Column(db.Time)
@@ -23,7 +23,7 @@ class RaidCalendarModel(db.Model):
     def __init__(self, data):
         self.userid = data['userid']
         self.raidid = data['raidid']
-        self.calendarid = data['calendarid'][0]
+        self.guildid = data['guildid']
         self.owner = data['owner']
         self.day = data['day']
         self.starttime = data['starttime']
@@ -34,8 +34,8 @@ class RaidCalendarModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def update(self, data):
-        self.itemquantity = self.itemquantity + data['itemquantity']
+    def update_schedule(self, data):
+        self.guildid = data['guildid']
         db.session.commit()
 
     def delete(self):
@@ -47,12 +47,24 @@ class RaidCalendarModel(db.Model):
             RaidCalendarModel.raidid == raidid
         ).all()
 
+    def get_schedule_by_guildid(guildid):
+        return db.session.query(RaidCalendarModel).filter(
+            RaidCalendarModel.guildid == guildid
+        ).all()
+
+    def get_one(data):
+        return db.session.query(RaidCalendarModel).filter(
+            RaidCalendarModel.raidid == data['raidid'],
+            RaidCalendarModel.starttime == data['starttime'],
+            RaidCalendarModel.endtime == data['endtime']
+        ).first()
+
 
 class RaidCalendarSchema(Schema):
     id = fields.Int(dump_only=True)
     userid = fields.Str(required=True)
     raidid = fields.Str(required=True)
-    calendarid = fields.Str(required=True)
+    guildid = fields.Str(required=True)
     owner = fields.List(fields.Str(), required=True)
     day = fields.Int(required=True)
     starttime = fields.Str(required=True)
