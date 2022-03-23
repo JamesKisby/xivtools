@@ -186,7 +186,7 @@ export default function ItemSearch(props) {
       </div>
     ) : (
       <div className={index % 2 ? "ListItemOdd" : "ListItemEven"} style={style}>
-          <ListItem id={result[index].id} button component={Link} to={`/item/${result[index].id}`}>
+          <ListItem id={result[index].id} button onClick={props.onClose} component={Link} to={`/item/${result[index].id}`}>
               <img src={result[index].icon} />
             <ListItemText primary={result[index].name}/>
             <p>iLv. {result[index].levelitem} - {result[index].itemuicategory}</p>
@@ -325,7 +325,8 @@ export default function ItemSearch(props) {
                   type="search"
                   variant="outlined"
                   onChange={handleSearch}
-                  value={searchValues}/>
+                  value={searchValues}
+                  autoFocus/>
               </form>
               </Grid>
               <Grid item xs={12}>

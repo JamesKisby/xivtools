@@ -180,7 +180,7 @@ export default function Sidebar(props) {
               horizontal: 'left',
             }}
           >
-            <ItemSearch />
+            <ItemSearch onClose={handleClose}/>
           </Popover>
         </List>
         <Divider />
