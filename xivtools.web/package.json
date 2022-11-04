@@ -47,7 +47,7 @@
     "clsx": "^1.1.1",
     "date-fns": "^2.21.1",
     "dotenv-webpack": "^1.8.0",
-    "file-loader": "^5.1.0",
+    "file-loader": "^6.0.0",
     "react": "^16.14.0",
     "react-async": "^10.0.1",
     "react-dom": "^16.14.0",
